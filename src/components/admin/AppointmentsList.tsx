@@ -67,7 +67,7 @@ export function AppointmentsList({
     d.setDate(d.getDate() + days);
     const newDate = d.toISOString().split("T")[0];
     setSelectedDate(newDate);
-    const data = await getAppointments({ date: newDate });
+    const data = await getAppointments({ date: newDate }) as unknown as AppointmentWithRelations[];
     setAppointments(data);
   };
 
@@ -92,7 +92,7 @@ export function AppointmentsList({
         notes: form.notes || undefined,
       });
       setShowModal(false);
-      const data = await getAppointments({ date: selectedDate });
+      const data = await getAppointments({ date: selectedDate }) as unknown as AppointmentWithRelations[];
       setAppointments(data);
     } catch (error) {
       console.error(error);
@@ -103,14 +103,14 @@ export function AppointmentsList({
 
   const handleStatus = async (id: string, status: AppointmentStatus) => {
     await updateAppointmentStatus(id, status);
-    const data = await getAppointments({ date: selectedDate });
+    const data = await getAppointments({ date: selectedDate }) as unknown as AppointmentWithRelations[];
     setAppointments(data);
   };
 
   const handleDelete = async (id: string) => {
     if (confirm("Eliminar este agendamento?")) {
       await deleteAppointment(id);
-      const data = await getAppointments({ date: selectedDate });
+      const data = await getAppointments({ date: selectedDate }) as unknown as AppointmentWithRelations[];
       setAppointments(data);
     }
   };
@@ -140,7 +140,7 @@ export function AppointmentsList({
               value={selectedDate}
               onChange={async (e) => {
                 setSelectedDate(e.target.value);
-                const data = await getAppointments({ date: e.target.value });
+                const data = await getAppointments({ date: e.target.value }) as unknown as AppointmentWithRelations[];
                 setAppointments(data);
               }}
               className="input w-auto"
