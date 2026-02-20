@@ -1,6 +1,7 @@
 "use server";
 
 import { prisma } from "@/lib/prisma";
+import { serialize } from "@/lib/serialize";
 
 export async function getDashboardStats() {
   const now = new Date();
@@ -52,13 +53,13 @@ export async function getDashboardStats() {
     0
   );
 
-  return {
+  return serialize({
     todayAppointments,
     weekAppointments,
     monthRevenue,
     totalClients,
     upcomingAppointments,
-  };
+  });
 }
 
 export async function getWeeklyChartData() {

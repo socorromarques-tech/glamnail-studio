@@ -1,17 +1,20 @@
 "use server";
 
 import { prisma } from "@/lib/prisma";
+import { serialize } from "@/lib/serialize";
 import { revalidatePath } from "next/cache";
 
 export async function getServices(includeInactive = false) {
-  return prisma.service.findMany({
+  const data = await prisma.service.findMany({
     where: includeInactive ? {} : { active: true },
     orderBy: { name: "asc" },
   });
+  return serialize(data);
 }
 
 export async function getService(id: string) {
-  return prisma.service.findUnique({ where: { id } });
+  const data = await prisma.service.findUnique({ where: { id } });
+  return serialize(data);
 }
 
 export async function createService(data: {
@@ -22,13 +25,10 @@ export async function createService(data: {
   color?: string;
 }) {
   const service = await prisma.service.create({
-    data: {
-      ...data,
-      price: data.price,
-    },
+    data: { ...data, price: data.price },
   });
   revalidatePath("/services");
-  return service;
+  return serialize(service);
 }
 
 export async function updateService(
@@ -44,7 +44,7 @@ export async function updateService(
 ) {
   const service = await prisma.service.update({ where: { id }, data });
   revalidatePath("/services");
-  return service;
+  return serialize(service);
 }
 
 export async function deleteService(id: string) {

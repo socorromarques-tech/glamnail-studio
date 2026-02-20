@@ -1,6 +1,7 @@
 "use server";
 
 import { prisma } from "@/lib/prisma";
+import { serialize } from "@/lib/serialize";
 import { revalidatePath } from "next/cache";
 import { triggerN8nWebhook } from "@/lib/n8n";
 import { AppointmentStatus } from "@prisma/client";
@@ -22,7 +23,7 @@ export async function getAppointments(filters?: {
   if (filters?.status) where.status = filters.status;
   if (filters?.clientId) where.clientId = filters.clientId;
 
-  return prisma.appointment.findMany({
+  const data = await prisma.appointment.findMany({
     where,
     include: {
       client: true,
@@ -30,16 +31,19 @@ export async function getAppointments(filters?: {
     },
     orderBy: { date: "asc" },
   });
+
+  return serialize(data);
 }
 
 export async function getAppointment(id: string) {
-  return prisma.appointment.findUnique({
+  const data = await prisma.appointment.findUnique({
     where: { id },
     include: {
       client: true,
       services: { include: { service: true } },
     },
   });
+  return serialize(data);
 }
 
 export async function getTodayAppointments() {
@@ -48,7 +52,7 @@ export async function getTodayAppointments() {
   const tomorrow = new Date(today);
   tomorrow.setDate(tomorrow.getDate() + 1);
 
-  return prisma.appointment.findMany({
+  const data = await prisma.appointment.findMany({
     where: {
       date: { gte: today, lt: tomorrow },
     },
@@ -58,6 +62,8 @@ export async function getTodayAppointments() {
     },
     orderBy: { date: "asc" },
   });
+
+  return serialize(data);
 }
 
 export async function createAppointment(data: {
@@ -104,7 +110,7 @@ export async function createAppointment(data: {
 
   revalidatePath("/appointments");
   revalidatePath("/dashboard");
-  return appointment;
+  return serialize(appointment);
 }
 
 export async function updateAppointmentStatus(
@@ -128,7 +134,7 @@ export async function updateAppointmentStatus(
 
   revalidatePath("/appointments");
   revalidatePath("/dashboard");
-  return appointment;
+  return serialize(appointment);
 }
 
 export async function deleteAppointment(id: string) {
@@ -152,7 +158,6 @@ export async function getAvailableSlots(date: string, serviceIds: string[]) {
   const dayOfWeek = requestedDate.getDay();
   if (!workDays.includes(dayOfWeek)) return [];
 
-  // Get existing appointments for that day
   const startOfDay = new Date(date);
   startOfDay.setHours(0, 0, 0, 0);
   const endOfDay = new Date(date);
@@ -166,7 +171,6 @@ export async function getAvailableSlots(date: string, serviceIds: string[]) {
     orderBy: { date: "asc" },
   });
 
-  // Generate slots
   const [openH, openM] = config.openTime.split(":").map(Number);
   const [closeH, closeM] = config.closeTime.split(":").map(Number);
   const slots: { time: string; available: boolean }[] = [];

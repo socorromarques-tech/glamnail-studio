@@ -1,6 +1,7 @@
 "use server";
 
 import { prisma } from "@/lib/prisma";
+import { serialize } from "@/lib/serialize";
 import { revalidatePath } from "next/cache";
 
 export async function getClients(search?: string) {
@@ -14,7 +15,7 @@ export async function getClients(search?: string) {
       }
     : {};
 
-  return prisma.client.findMany({
+  const data = await prisma.client.findMany({
     where,
     include: {
       appointments: {
@@ -27,10 +28,12 @@ export async function getClients(search?: string) {
     },
     orderBy: { name: "asc" },
   });
+
+  return serialize(data);
 }
 
 export async function getClient(id: string) {
-  return prisma.client.findUnique({
+  const data = await prisma.client.findUnique({
     where: { id },
     include: {
       appointments: {
@@ -41,6 +44,7 @@ export async function getClient(id: string) {
       },
     },
   });
+  return serialize(data);
 }
 
 export async function createClient(data: {
@@ -51,7 +55,7 @@ export async function createClient(data: {
 }) {
   const client = await prisma.client.create({ data });
   revalidatePath("/clients");
-  return client;
+  return serialize(client);
 }
 
 export async function updateClient(
@@ -61,7 +65,7 @@ export async function updateClient(
   const client = await prisma.client.update({ where: { id }, data });
   revalidatePath("/clients");
   revalidatePath(`/clients/${id}`);
-  return client;
+  return serialize(client);
 }
 
 export async function deleteClient(id: string) {
