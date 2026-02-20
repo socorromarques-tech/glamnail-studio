@@ -19,7 +19,7 @@ interface AppointmentWithRelations {
   date: Date;
   endTime: Date;
   status: string;
-  totalPrice: { toString(): string };
+  totalPrice: number | string;
   notes: string | null;
   client: { id: string; name: string; phone: string };
   services: Array<{ service: { id: string; name: string; color: string } }>;
@@ -34,7 +34,7 @@ interface Client {
 interface Service {
   id: string;
   name: string;
-  price: { toString(): string };
+  price: number;
   duration: number;
   color: string;
 }

@@ -1,11 +1,13 @@
 import { getClients } from "@/actions/clients";
 import { ClientsList } from "@/components/admin/ClientsList";
-import { Users, Plus } from "lucide-react";
 
 export const dynamic = "force-dynamic";
 
 export default async function ClientsPage() {
   const clients = await getClients();
+
+  // Serialize for client component
+  const serializedClients = JSON.parse(JSON.stringify(clients));
 
   return (
     <div className="space-y-6 animate-fade-in">
@@ -17,7 +19,7 @@ export default async function ClientsPage() {
           </p>
         </div>
       </div>
-      <ClientsList clients={clients} />
+      <ClientsList clients={serializedClients} />
     </div>
   );
 }

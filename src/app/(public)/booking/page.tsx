@@ -10,6 +10,18 @@ export default async function BookingPage() {
     getBusinessConfig(),
   ]);
 
+  // Serialize Decimal/Date objects for client component
+  const serializedServices = services.map((s) => ({
+    ...s,
+    price: Number(s.price),
+    createdAt: s.createdAt.toISOString(),
+    updatedAt: s.updatedAt.toISOString(),
+  }));
+
+  const serializedConfig = config
+    ? { ...config, }
+    : null;
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-primary-50 via-white to-gold-50/50 dark:from-gray-950 dark:via-gray-900 dark:to-gray-950">
       <div className="max-w-3xl mx-auto px-4 py-12">
@@ -21,7 +33,7 @@ export default async function BookingPage() {
             Escolha o serviço, data e horário que preferir
           </p>
         </div>
-        <BookingForm services={services} config={config} />
+        <BookingForm services={serializedServices} config={serializedConfig} />
       </div>
     </div>
   );

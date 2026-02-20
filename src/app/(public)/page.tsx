@@ -3,7 +3,7 @@ import { getServices } from "@/actions/services";
 import { getBusinessConfig } from "@/actions/settings";
 import { formatCurrency } from "@/lib/utils";
 import {
-  Sparkles, Calendar, Clock, MapPin, Phone, Mail,
+  Sparkles, Calendar, Clock, MapPin, Phone,
   ArrowRight, Star, Scissors, Heart,
 } from "lucide-react";
 
@@ -70,8 +70,6 @@ export default async function LandingPage() {
               Ver Serviços
             </Link>
           </div>
-
-          {/* Stats */}
           <div className="grid grid-cols-3 gap-6 max-w-lg mx-auto mt-16">
             {[
               { value: "500+", label: "Clientes Felizes" },
@@ -145,21 +143,9 @@ export default async function LandingPage() {
           </div>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             {[
-              {
-                icon: Heart,
-                title: "Produtos Premium",
-                desc: "Utilizamos apenas produtos de alta qualidade para garantir os melhores resultados.",
-              },
-              {
-                icon: Star,
-                title: "Profissionalismo",
-                desc: "Equipa qualificada com anos de experiência em cuidados de unhas.",
-              },
-              {
-                icon: Calendar,
-                title: "Agendamento Fácil",
-                desc: "Reserve online a qualquer momento, sem complicações.",
-              },
+              { icon: Heart, title: "Produtos Premium", desc: "Utilizamos apenas produtos de alta qualidade para garantir os melhores resultados." },
+              { icon: Star, title: "Profissionalismo", desc: "Equipa qualificada com anos de experiência em cuidados de unhas." },
+              { icon: Calendar, title: "Agendamento Fácil", desc: "Reserve online a qualquer momento, sem complicações." },
             ].map((item) => (
               <div key={item.title} className="text-center">
                 <div className="w-14 h-14 rounded-2xl gradient-bg flex items-center justify-center mx-auto mb-4 shadow-lg shadow-primary-500/25">
@@ -179,27 +165,19 @@ export default async function LandingPage() {
           <div className="card p-8 md:p-12 gradient-bg text-white relative overflow-hidden">
             <div className="absolute -top-20 -right-20 w-60 h-60 bg-white/10 rounded-full blur-2xl" />
             <div className="relative">
-              <h2 className="text-3xl font-heading font-bold mb-6 text-center">
-                Visite-nos
-              </h2>
+              <h2 className="text-3xl font-heading font-bold mb-6 text-center">Visite-nos</h2>
               <div className="grid grid-cols-1 md:grid-cols-3 gap-6 text-center">
                 <div>
                   <MapPin className="w-6 h-6 mx-auto mb-2 opacity-80" />
-                  <p className="text-sm opacity-90">
-                    {config?.address || "Rua das Flores, 123 - Lisboa"}
-                  </p>
+                  <p className="text-sm opacity-90">{config?.address || "Rua das Flores, 123 - Lisboa"}</p>
                 </div>
                 <div>
                   <Phone className="w-6 h-6 mx-auto mb-2 opacity-80" />
-                  <p className="text-sm opacity-90">
-                    {config?.phone || "+351 912 345 678"}
-                  </p>
+                  <p className="text-sm opacity-90">{config?.phone || "+351 912 345 678"}</p>
                 </div>
                 <div>
                   <Clock className="w-6 h-6 mx-auto mb-2 opacity-80" />
-                  <p className="text-sm opacity-90">
-                    {config?.openTime || "09:00"} - {config?.closeTime || "18:00"}
-                  </p>
+                  <p className="text-sm opacity-90">{config?.openTime || "09:00"} - {config?.closeTime || "18:00"}</p>
                 </div>
               </div>
               <div className="text-center mt-8">
@@ -218,16 +196,10 @@ export default async function LandingPage() {
         <div className="max-w-6xl mx-auto flex flex-col md:flex-row items-center justify-between gap-4">
           <div className="flex items-center gap-2">
             <Sparkles className="w-4 h-4 text-primary-500" />
-            <span className="text-sm font-medium gradient-text">
-              {config?.businessName || "GlamNail Studio"}
-            </span>
+            <span className="text-sm font-medium gradient-text">{config?.businessName || "GlamNail Studio"}</span>
           </div>
-          <p className="text-sm text-gray-400">
-            © {new Date().getFullYear()} Todos os direitos reservados.
-          </p>
-          <Link href="/login" className="text-sm text-gray-400 hover:text-primary-500 transition-colors">
-            Área Admin
-          </Link>
+          <p className="text-sm text-gray-400">© {new Date().getFullYear()} Todos os direitos reservados.</p>
+          <Link href="/login" className="text-sm text-gray-400 hover:text-primary-500 transition-colors">Área Admin</Link>
         </div>
       </footer>
     </div>

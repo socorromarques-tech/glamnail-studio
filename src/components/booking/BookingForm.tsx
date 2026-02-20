@@ -13,7 +13,7 @@ interface Service {
   id: string;
   name: string;
   description: string | null;
-  price: { toString(): string };
+  price: number;
   duration: number;
   color: string;
 }

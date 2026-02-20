@@ -13,6 +13,16 @@ export default async function AppointmentsPage() {
     getServices(),
   ]);
 
+  // Serialize all Decimal/Date objects for client component
+  const serializedAppointments = JSON.parse(JSON.stringify(appointments));
+  const serializedClients = JSON.parse(JSON.stringify(clients));
+  const serializedServices = services.map((s) => ({
+    ...s,
+    price: Number(s.price),
+    createdAt: s.createdAt.toISOString(),
+    updatedAt: s.updatedAt.toISOString(),
+  }));
+
   return (
     <div className="space-y-6 animate-fade-in">
       <div>
@@ -22,9 +32,9 @@ export default async function AppointmentsPage() {
         </p>
       </div>
       <AppointmentsList
-        appointments={appointments}
-        clients={clients}
-        services={services}
+        appointments={serializedAppointments}
+        clients={serializedClients}
+        services={serializedServices}
       />
     </div>
   );
