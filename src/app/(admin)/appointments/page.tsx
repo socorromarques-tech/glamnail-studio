@@ -13,14 +13,12 @@ export default async function AppointmentsPage() {
     getServices(),
   ]);
 
-  // Serialize all Decimal/Date objects for client component
+  // Serialize Decimal objects for client component
   const serializedAppointments = JSON.parse(JSON.stringify(appointments));
   const serializedClients = JSON.parse(JSON.stringify(clients));
   const serializedServices = services.map((s) => ({
     ...s,
     price: Number(s.price),
-    createdAt: s.createdAt.toISOString(),
-    updatedAt: s.updatedAt.toISOString(),
   }));
 
   return (

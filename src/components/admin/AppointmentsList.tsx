@@ -4,13 +4,14 @@ import { useState } from "react";
 import {
   createAppointment,
   updateAppointmentStatus,
+  updateAppointment,
   deleteAppointment,
   getAppointments,
 } from "@/actions/appointments";
 import { formatTime, formatCurrency, getStatusColor, getStatusLabel, formatDate } from "@/lib/utils";
 import {
   Plus, Calendar, ChevronLeft, ChevronRight, Clock,
-  User, X, Check, XCircle, Trash2,
+  User, X, Check, XCircle, Trash2, Pencil,
 } from "lucide-react";
 import { AppointmentStatus } from "@prisma/client";
 
@@ -53,6 +54,8 @@ export function AppointmentsList({
   );
   const [appointments, setAppointments] = useState(initialAppointments);
   const [showModal, setShowModal] = useState(false);
+  const [editModal, setEditModal] = useState(false);
+  const [editingAppointment, setEditingAppointment] = useState<AppointmentWithRelations | null>(null);
   const [form, setForm] = useState({
     clientId: "",
     serviceIds: [] as string[],
@@ -211,6 +214,24 @@ export function AppointmentsList({
                     {formatCurrency(Number(apt.totalPrice))}
                   </span>
                   <div className="flex gap-1 ml-2">
+                    <button
+                      onClick={() => {
+                        const aptDate = new Date(apt.date);
+                        setEditingAppointment(apt);
+                        setForm({
+                          clientId: apt.client.id,
+                          serviceIds: apt.services.map((s) => s.service.id),
+                          date: aptDate.toISOString().split("T")[0],
+                          time: aptDate.toTimeString().slice(0, 5),
+                          notes: apt.notes || "",
+                        });
+                        setEditModal(true);
+                      }}
+                      className="p-1.5 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 text-gray-400 hover:text-primary-500"
+                      title="Editar"
+                    >
+                      <Pencil className="w-4 h-4" />
+                    </button>
                     {apt.status === "PENDING" && (
                       <button
                         onClick={() => handleStatus(apt.id, "CONFIRMED")}
@@ -326,6 +347,105 @@ export function AppointmentsList({
                 <button type="button" onClick={() => setShowModal(false)} className="btn-secondary flex-1">Cancelar</button>
                 <button type="submit" disabled={loading || form.serviceIds.length === 0} className="btn-primary flex-1">
                   {loading ? "A criar..." : "Criar Agendamento"}
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {/* Edit Modal */}
+      {editModal && editingAppointment && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+          <div className="card p-6 w-full max-w-lg animate-fade-in max-h-[90vh] overflow-y-auto">
+            <div className="flex items-center justify-between mb-4">
+              <h2 className="text-lg font-heading font-semibold">Editar Agendamento</h2>
+              <button onClick={() => setEditModal(false)} className="p-1 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800">
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+            <form onSubmit={async (e) => {
+              e.preventDefault();
+              setLoading(true);
+              try {
+                const dateTime = new Date(`${form.date}T${form.time}:00`);
+                await updateAppointment(editingAppointment.id, {
+                  clientId: form.clientId,
+                  serviceIds: form.serviceIds,
+                  date: dateTime,
+                  notes: form.notes || undefined,
+                });
+                setEditModal(false);
+                const data = await getAppointments({ date: selectedDate }) as unknown as AppointmentWithRelations[];
+                setAppointments(data);
+              } catch (error) {
+                console.error(error);
+              } finally {
+                setLoading(false);
+              }
+            }} className="space-y-4">
+              <div>
+                <label className="block text-sm font-medium mb-1">Cliente *</label>
+                <select
+                  value={form.clientId}
+                  onChange={(e) => setForm({ ...form, clientId: e.target.value })}
+                  className="input"
+                  required
+                >
+                  <option value="">Selecionar cliente...</option>
+                  {clients.map((c) => (
+                    <option key={c.id} value={c.id}>{c.name} - {c.phone}</option>
+                  ))}
+                </select>
+              </div>
+              <div>
+                <label className="block text-sm font-medium mb-2">Serviços *</label>
+                <div className="grid grid-cols-2 gap-2">
+                  {services.map((s) => (
+                    <button
+                      key={s.id}
+                      type="button"
+                      onClick={() => toggleService(s.id)}
+                      className={`p-3 rounded-xl border text-left text-sm transition-all ${
+                        form.serviceIds.includes(s.id)
+                          ? "border-primary-500 bg-primary-50 dark:bg-primary-900/20"
+                          : "border-gray-200 dark:border-gray-700 hover:border-gray-300"
+                      }`}
+                    >
+                      <div className="flex items-center gap-2">
+                        <div className="w-3 h-3 rounded-full" style={{ backgroundColor: s.color }} />
+                        <span className="font-medium">{s.name}</span>
+                      </div>
+                      <p className="text-xs text-gray-400 mt-1">
+                        {formatCurrency(Number(s.price))} · {s.duration} min
+                      </p>
+                    </button>
+                  ))}
+                </div>
+                {form.serviceIds.length > 0 && (
+                  <div className="mt-2 p-2 rounded-lg bg-primary-50 dark:bg-primary-900/10 text-sm">
+                    Total: <strong>{formatCurrency(selectedTotal)}</strong> · {selectedDuration} min
+                  </div>
+                )}
+              </div>
+              <div className="grid grid-cols-2 gap-3">
+                <div>
+                  <label className="block text-sm font-medium mb-1">Data *</label>
+                  <input type="date" value={form.date} onChange={(e) => setForm({ ...form, date: e.target.value })} className="input" required />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium mb-1">Hora *</label>
+                  <input type="time" value={form.time} onChange={(e) => setForm({ ...form, time: e.target.value })} className="input" required />
+                </div>
+              </div>
+              <div>
+                <label className="block text-sm font-medium mb-1">Notas</label>
+                <textarea value={form.notes} onChange={(e) => setForm({ ...form, notes: e.target.value })} className="input" rows={2} />
+              </div>
+              <div className="flex gap-3 pt-2">
+                <button type="button" onClick={() => setEditModal(false)} className="btn-secondary flex-1">Cancelar</button>
+                <button type="submit" disabled={loading || form.serviceIds.length === 0} className="btn-primary flex-1">
+                  {loading ? "A guardar..." : "Guardar Alterações"}
                 </button>
               </div>
             </form>

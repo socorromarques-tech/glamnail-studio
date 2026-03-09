@@ -10,12 +10,10 @@ export default async function BookingPage() {
     getBusinessConfig(),
   ]);
 
-  // Serialize Decimal/Date objects for client component
+  // Serialize Decimal objects for client component
   const serializedServices = services.map((s) => ({
     ...s,
     price: Number(s.price),
-    createdAt: s.createdAt.toISOString(),
-    updatedAt: s.updatedAt.toISOString(),
   }));
 
   const serializedConfig = config

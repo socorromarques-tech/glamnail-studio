@@ -143,6 +143,56 @@ export async function deleteAppointment(id: string) {
   revalidatePath("/dashboard");
 }
 
+export async function updateAppointment(
+  id: string,
+  data: {
+    clientId: string;
+    serviceIds: string[];
+    date: Date;
+    notes?: string;
+  }
+) {
+  const services = await prisma.service.findMany({
+    where: { id: { in: data.serviceIds } },
+  });
+
+  const totalDuration = services.reduce((sum, s) => sum + s.duration, 0);
+  const totalPrice = services.reduce(
+    (sum, s) => sum + Number(s.price),
+    0
+  );
+
+  const endTime = new Date(data.date);
+  endTime.setMinutes(endTime.getMinutes() + totalDuration);
+
+  await prisma.appointmentService.deleteMany({ where: { appointmentId: id } });
+
+  const appointment = await prisma.appointment.update({
+    where: { id },
+    data: {
+      clientId: data.clientId,
+      date: data.date,
+      endTime,
+      totalPrice,
+      notes: data.notes,
+      services: {
+        create: services.map((s) => ({
+          serviceId: s.id,
+          price: s.price,
+        })),
+      },
+    },
+    include: {
+      client: true,
+      services: { include: { service: true } },
+    },
+  });
+
+  revalidatePath("/appointments");
+  revalidatePath("/dashboard");
+  return serialize(appointment);
+}
+
 export async function getAvailableSlots(date: string, serviceIds: string[]) {
   const config = await prisma.businessConfig.findFirst();
   if (!config) return [];
