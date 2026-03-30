@@ -5,9 +5,10 @@ import { createClient } from "@/actions/clients";
 import { createAppointment, getAvailableSlots } from "@/actions/appointments";
 import { formatCurrency } from "@/lib/utils";
 import {
-  Scissors, Calendar, Clock, User, Phone, Mail,
+  Scissors, Clock, User, Phone, Mail,
   ChevronRight, ChevronLeft, Check, Sparkles, MessageSquare,
 } from "lucide-react";
+import Link from "next/link";
 
 interface Service {
   id: string;
@@ -121,9 +122,9 @@ export function BookingForm({ services, config }: { services: Service[]; config:
             </div>
           </div>
         </div>
-        <a href="/" className="btn-primary inline-flex items-center gap-2">
+        <Link href="/" className="btn-primary inline-flex items-center gap-2">
           <Sparkles className="w-4 h-4" /> Voltar ao Início
-        </a>
+        </Link>
       </div>
     );
   }
