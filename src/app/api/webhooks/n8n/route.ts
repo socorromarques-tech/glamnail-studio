@@ -70,6 +70,38 @@ export async function POST(request: Request) {
         }
         return NextResponse.json({ success: false, error: "Missing appointmentId" }, { status: 400 });
       }
+      case "get-services": {
+        const services = await prisma.service.findMany({
+          where: { active: true },
+          orderBy: { name: "asc" },
+        });
+        return NextResponse.json({ success: true, services });
+      }
+      case "get-available-slots": {
+        const { date, serviceIds } = data || {};
+        if (!date || !serviceIds || !Array.isArray(serviceIds)) {
+          return NextResponse.json({ success: false, error: "Missing date or serviceIds" }, { status: 400 });
+        }
+        
+        const { getAvailableSlots } = await import("@/actions/appointments");
+        const slots = await getAvailableSlots(date, serviceIds);
+        return NextResponse.json({ success: true, slots });
+      }
+      case "create-appointment": {
+        const { clientId, serviceIds, date, notes } = data || {};
+        if (!clientId || !serviceIds || !date) {
+          return NextResponse.json({ success: false, error: "Missing required fields" }, { status: 400 });
+        }
+
+        const { createAppointment } = await import("@/actions/appointments");
+        const appointment = await createAppointment({
+          clientId,
+          serviceIds,
+          date: new Date(date),
+          notes,
+        });
+        return NextResponse.json({ success: true, appointment });
+      }
       case "whatsapp-message": {
         if (!process.env.OPENAI_API_KEY) {
           return NextResponse.json({ error: "OpenAI not configured" }, { status: 500 });
