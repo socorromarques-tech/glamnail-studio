@@ -24,32 +24,24 @@ export default async function DashboardPage() {
       value: stats.todayAppointments,
       subtitle: "agendamentos",
       icon: Calendar,
-      color: "from-primary-500 to-primary-600",
-      shadow: "shadow-primary-500/25",
     },
     {
       title: "Esta Semana",
       value: stats.weekAppointments,
       subtitle: "agendamentos",
       icon: TrendingUp,
-      color: "from-blue-500 to-blue-600",
-      shadow: "shadow-blue-500/25",
     },
     {
       title: "Receita Mensal",
       value: formatCurrency(stats.monthRevenue),
       subtitle: "este mês",
       icon: DollarSign,
-      color: "from-emerald-500 to-emerald-600",
-      shadow: "shadow-emerald-500/25",
     },
     {
       title: "Clientes",
       value: stats.totalClients,
       subtitle: "registados",
       icon: Users,
-      color: "from-amber-500 to-amber-600",
-      shadow: "shadow-amber-500/25",
     },
   ];
 
@@ -68,7 +60,7 @@ export default async function DashboardPage() {
         {statCards.map((stat, index) => (
           <div
             key={stat.title}
-            className="card p-6"
+            className="stat-card-admin"
             style={{ animationDelay: `${index * 100}ms` }}
           >
             <div className="flex items-start justify-between">
@@ -80,9 +72,9 @@ export default async function DashboardPage() {
                 <p className="text-xs text-gray-400 mt-1">{stat.subtitle}</p>
               </div>
               <div
-                className={`w-10 h-10 rounded-xl bg-gradient-to-br ${stat.color} flex items-center justify-center shadow-lg ${stat.shadow}`}
+                className="w-10 h-10 rounded-xl bg-gray-100 dark:bg-gray-800 flex items-center justify-center"
               >
-                <stat.icon className="w-5 h-5 text-white" />
+                <stat.icon className="w-5 h-5 text-gray-600 dark:text-gray-300" />
               </div>
             </div>
           </div>
@@ -92,7 +84,7 @@ export default async function DashboardPage() {
       {/* Weekly Chart & Upcoming */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Weekly overview */}
-        <div className="card p-6">
+        <div className="card-admin">
           <h2 className="font-heading font-semibold text-lg mb-4">
             Esta Semana
           </h2>
@@ -121,7 +113,7 @@ export default async function DashboardPage() {
         </div>
 
         {/* Upcoming appointments */}
-        <div className="card p-6">
+        <div className="card-admin">
           <div className="flex items-center justify-between mb-4">
             <h2 className="font-heading font-semibold text-lg">
               Próximos Agendamentos

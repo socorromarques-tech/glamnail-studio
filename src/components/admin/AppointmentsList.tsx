@@ -174,7 +174,7 @@ export function AppointmentsList({
           </div>
         ) : (
           appointments.map((apt) => (
-            <div key={apt.id} className="card p-5">
+            <div key={apt.id} className="card-admin">
               <div className="flex items-start justify-between">
                 <div className="flex items-center gap-4">
                   <div className="text-center">
