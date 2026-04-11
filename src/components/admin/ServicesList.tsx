@@ -1,7 +1,11 @@
 "use client";
 
 import { useState } from "react";
-import { createService, updateService, deleteService } from "@/actions/services";
+import {
+  createService,
+  updateService,
+  deleteService,
+} from "@/actions/services";
 import { formatCurrency } from "@/lib/utils";
 import { Plus, Edit2, Trash2, Clock, X, Scissors } from "lucide-react";
 
@@ -16,21 +20,43 @@ interface Service {
 }
 
 const COLOR_OPTIONS = [
-  "#E91E63", "#9C27B0", "#FF4081", "#4CAF50", "#00BCD4",
-  "#FF6F00", "#7C4DFF", "#795548", "#607D8B", "#F44336",
+  "#E91E63",
+  "#9C27B0",
+  "#FF4081",
+  "#4CAF50",
+  "#00BCD4",
+  "#FF6F00",
+  "#7C4DFF",
+  "#795548",
+  "#607D8B",
+  "#F44336",
 ];
 
-export function ServicesList({ services: initialServices }: { services: Service[] }) {
+export function ServicesList({
+  services: initialServices,
+}: {
+  services: Service[];
+}) {
   const [showModal, setShowModal] = useState(false);
   const [editingService, setEditingService] = useState<Service | null>(null);
   const [form, setForm] = useState({
-    name: "", description: "", price: "", duration: "", color: "#E91E63",
+    name: "",
+    description: "",
+    price: "",
+    duration: "",
+    color: "#E91E63",
   });
   const [loading, setLoading] = useState(false);
 
   const openCreate = () => {
     setEditingService(null);
-    setForm({ name: "", description: "", price: "", duration: "", color: "#E91E63" });
+    setForm({
+      name: "",
+      description: "",
+      price: "",
+      duration: "",
+      color: "#E91E63",
+    });
     setShowModal(true);
   };
 
@@ -83,7 +109,10 @@ export function ServicesList({ services: initialServices }: { services: Service[
   return (
     <>
       <div className="flex justify-end">
-        <button onClick={openCreate} className="btn-primary flex items-center gap-2">
+        <button
+          onClick={openCreate}
+          className="btn-primary flex items-center gap-2"
+        >
           <Plus className="w-4 h-4" />
           Novo Serviço
         </button>
@@ -105,7 +134,10 @@ export function ServicesList({ services: initialServices }: { services: Service[
               <div className="flex items-center gap-3">
                 <div
                   className="w-10 h-10 rounded-xl flex items-center justify-center"
-                  style={{ backgroundColor: `${service.color}20`, color: service.color }}
+                  style={{
+                    backgroundColor: `${service.color}20`,
+                    color: service.color,
+                  }}
                 >
                   <Scissors className="w-5 h-5" />
                 </div>
@@ -117,10 +149,16 @@ export function ServicesList({ services: initialServices }: { services: Service[
                 </div>
               </div>
               <div className="flex gap-1">
-                <button onClick={() => openEdit(service)} className="p-1.5 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 text-gray-400 hover:text-gray-600">
+                <button
+                  onClick={() => openEdit(service)}
+                  className="p-1.5 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 text-gray-400 hover:text-gray-600"
+                >
                   <Edit2 className="w-4 h-4" />
                 </button>
-                <button onClick={() => handleDelete(service.id)} className="p-1.5 rounded-lg hover:bg-red-50 dark:hover:bg-red-900/20 text-gray-400 hover:text-red-500">
+                <button
+                  onClick={() => handleDelete(service.id)}
+                  className="p-1.5 rounded-lg hover:bg-red-50 dark:hover:bg-red-900/20 text-gray-400 hover:text-red-500"
+                >
                   <Trash2 className="w-4 h-4" />
                 </button>
               </div>
@@ -163,27 +201,66 @@ export function ServicesList({ services: initialServices }: { services: Service[
               <h2 className="text-lg font-heading font-semibold">
                 {editingService ? "Editar Serviço" : "Novo Serviço"}
               </h2>
-              <button onClick={() => setShowModal(false)} className="p-1 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800">
+              <button
+                onClick={() => setShowModal(false)}
+                className="p-1 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800"
+              >
                 <X className="w-5 h-5" />
               </button>
             </div>
             <form onSubmit={handleSubmit} className="space-y-4">
               <div>
                 <label className="block text-sm font-medium mb-1">Nome *</label>
-                <input type="text" value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} className="input" required />
+                <input
+                  type="text"
+                  value={form.name}
+                  onChange={(e) => setForm({ ...form, name: e.target.value })}
+                  className="input"
+                  required
+                />
               </div>
               <div>
-                <label className="block text-sm font-medium mb-1">Descrição</label>
-                <textarea value={form.description} onChange={(e) => setForm({ ...form, description: e.target.value })} className="input" rows={2} />
+                <label className="block text-sm font-medium mb-1">
+                  Descrição
+                </label>
+                <textarea
+                  value={form.description}
+                  onChange={(e) =>
+                    setForm({ ...form, description: e.target.value })
+                  }
+                  className="input"
+                  rows={2}
+                />
               </div>
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="block text-sm font-medium mb-1">Preço (€) *</label>
-                  <input type="number" step="0.01" value={form.price} onChange={(e) => setForm({ ...form, price: e.target.value })} className="input" required />
+                  <label className="block text-sm font-medium mb-1">
+                    Preço (€) *
+                  </label>
+                  <input
+                    type="number"
+                    step="0.01"
+                    value={form.price}
+                    onChange={(e) =>
+                      setForm({ ...form, price: e.target.value })
+                    }
+                    className="input"
+                    required
+                  />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium mb-1">Duração (min) *</label>
-                  <input type="number" value={form.duration} onChange={(e) => setForm({ ...form, duration: e.target.value })} className="input" required />
+                  <label className="block text-sm font-medium mb-1">
+                    Duração (min) *
+                  </label>
+                  <input
+                    type="number"
+                    value={form.duration}
+                    onChange={(e) =>
+                      setForm({ ...form, duration: e.target.value })
+                    }
+                    className="input"
+                    required
+                  />
                 </div>
               </div>
               <div>
@@ -195,7 +272,9 @@ export function ServicesList({ services: initialServices }: { services: Service[
                       type="button"
                       onClick={() => setForm({ ...form, color })}
                       className={`w-8 h-8 rounded-full border-2 transition-all ${
-                        form.color === color ? "border-gray-800 dark:border-white scale-110" : "border-transparent"
+                        form.color === color
+                          ? "border-gray-800 dark:border-white scale-110"
+                          : "border-transparent"
                       }`}
                       style={{ backgroundColor: color }}
                     />
@@ -203,9 +282,23 @@ export function ServicesList({ services: initialServices }: { services: Service[
                 </div>
               </div>
               <div className="flex gap-3 pt-2">
-                <button type="button" onClick={() => setShowModal(false)} className="btn-secondary flex-1">Cancelar</button>
-                <button type="submit" disabled={loading} className="btn-primary flex-1">
-                  {loading ? "A guardar..." : editingService ? "Guardar" : "Criar"}
+                <button
+                  type="button"
+                  onClick={() => setShowModal(false)}
+                  className="btn-secondary flex-1"
+                >
+                  Cancelar
+                </button>
+                <button
+                  type="submit"
+                  disabled={loading}
+                  className="btn-primary flex-1"
+                >
+                  {loading
+                    ? "A guardar..."
+                    : editingService
+                      ? "Guardar"
+                      : "Criar"}
                 </button>
               </div>
             </form>

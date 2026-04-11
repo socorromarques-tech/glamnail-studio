@@ -62,15 +62,28 @@ const formatDateLabel = (date: string) => {
   });
 };
 
-export function BookingForm({ services, config }: { services: Service[]; config: Config }) {
+export function BookingForm({
+  services,
+  config,
+}: {
+  services: Service[];
+  config: Config;
+}) {
   const [step, setStep] = useState<Step>(1);
   const [selectedServices, setSelectedServices] = useState<string[]>([]);
   const [selectedDate, setSelectedDate] = useState("");
   const [selectedTime, setSelectedTime] = useState("");
-  const [slots, setSlots] = useState<{ time: string; available: boolean }[]>([]);
+  const [slots, setSlots] = useState<{ time: string; available: boolean }[]>(
+    [],
+  );
   const [loadingSlots, setLoadingSlots] = useState(false);
   const [slotError, setSlotError] = useState<string | null>(null);
-  const [form, setForm] = useState({ name: "", phone: "", email: "", notes: "" });
+  const [form, setForm] = useState({
+    name: "",
+    phone: "",
+    email: "",
+    notes: "",
+  });
   const [submitting, setSubmitting] = useState(false);
   const [submitError, setSubmitError] = useState<string | null>(null);
   const [success, setSuccess] = useState(false);
@@ -80,15 +93,23 @@ export function BookingForm({ services, config }: { services: Service[]; config:
       selectedServices
         .map((id) => services.find((service) => service.id === id))
         .filter((service): service is Service => Boolean(service)),
-    [selectedServices, services]
+    [selectedServices, services],
   );
 
-  const totalPrice = selectedServiceDetails.reduce((sum, service) => sum + Number(service.price), 0);
-  const totalDuration = selectedServiceDetails.reduce((sum, service) => sum + service.duration, 0);
+  const totalPrice = selectedServiceDetails.reduce(
+    (sum, service) => sum + Number(service.price),
+    0,
+  );
+  const totalDuration = selectedServiceDetails.reduce(
+    (sum, service) => sum + service.duration,
+    0,
+  );
 
   const toggleService = (id: string) => {
     setSelectedServices((prev) =>
-      prev.includes(id) ? prev.filter((serviceId) => serviceId !== id) : [...prev, id]
+      prev.includes(id)
+        ? prev.filter((serviceId) => serviceId !== id)
+        : [...prev, id],
     );
   };
 
@@ -108,7 +129,9 @@ export function BookingForm({ services, config }: { services: Service[]; config:
       setSlots(available);
     } catch (error) {
       console.error(error);
-      setSlotError("Não conseguimos carregar os horários agora. Tente novamente em instantes.");
+      setSlotError(
+        "Não conseguimos carregar os horários agora. Tente novamente em instantes.",
+      );
     } finally {
       setLoadingSlots(false);
     }
@@ -136,7 +159,9 @@ export function BookingForm({ services, config }: { services: Service[]; config:
       setSuccess(true);
     } catch (error) {
       console.error(error);
-      setSubmitError("Não foi possível concluir o seu agendamento. Verifique os dados e tente novamente.");
+      setSubmitError(
+        "Não foi possível concluir o seu agendamento. Verifique os dados e tente novamente.",
+      );
     } finally {
       setSubmitting(false);
     }
@@ -152,14 +177,17 @@ export function BookingForm({ services, config }: { services: Service[]; config:
           Agendamento confirmado!
         </h2>
         <p className="mb-6 text-gray-600 dark:text-gray-300">
-          Perfeito, {form.name || "cliente"}! Recebemos o seu pedido e vamos entrar em contacto em breve para finalizar os detalhes.
+          Perfeito, {form.name || "cliente"}! Recebemos o seu pedido e vamos
+          entrar em contacto em breve para finalizar os detalhes.
         </p>
 
         <div className="mx-auto mb-6 max-w-md rounded-xl border border-emerald-500/30 bg-white/80 p-4 dark:bg-gray-900/50">
           <div className="space-y-2 text-sm">
             <div className="flex justify-between">
               <span className="text-gray-400">Data</span>
-              <span className="font-medium">{formatDateLabel(selectedDate)}</span>
+              <span className="font-medium">
+                {formatDateLabel(selectedDate)}
+              </span>
             </div>
             <div className="flex justify-between">
               <span className="text-gray-400">Hora</span>
@@ -189,7 +217,9 @@ export function BookingForm({ services, config }: { services: Service[]; config:
         <div className="space-y-6">
           {step === 1 && (
             <div className="card animate-fade-in p-6">
-              <h2 className="mb-4 text-lg font-heading font-semibold">Escolha os serviços</h2>
+              <h2 className="mb-4 text-lg font-heading font-semibold">
+                Escolha os serviços
+              </h2>
 
               <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
                 {services.map((service) => {
@@ -211,14 +241,19 @@ export function BookingForm({ services, config }: { services: Service[]; config:
                         <div className="flex items-center gap-3">
                           <div
                             className="flex h-10 w-10 items-center justify-center rounded-xl"
-                            style={{ backgroundColor: `${service.color}15`, color: service.color }}
+                            style={{
+                              backgroundColor: `${service.color}15`,
+                              color: service.color,
+                            }}
                           >
                             <Scissors className="h-5 w-5" />
                           </div>
                           <div>
                             <p className="font-medium">{service.name}</p>
                             {service.description && (
-                              <p className="mt-0.5 text-xs text-gray-400">{service.description}</p>
+                              <p className="mt-0.5 text-xs text-gray-400">
+                                {service.description}
+                              </p>
                             )}
                           </div>
                         </div>
@@ -235,7 +270,9 @@ export function BookingForm({ services, config }: { services: Service[]; config:
                       </div>
 
                       <div className="flex items-center justify-between border-t border-gray-100 pt-3 dark:border-gray-800">
-                        <span className="text-sm font-bold">{formatCurrency(Number(service.price))}</span>
+                        <span className="text-sm font-bold">
+                          {formatCurrency(Number(service.price))}
+                        </span>
                         <span className="flex items-center gap-1 text-xs text-gray-400">
                           <Clock className="h-3 w-3" /> {service.duration} min
                         </span>
@@ -248,9 +285,12 @@ export function BookingForm({ services, config }: { services: Service[]; config:
               {selectedServices.length > 0 && (
                 <div className="mt-4 flex items-center justify-between rounded-xl bg-primary-50/60 p-3 dark:bg-primary-900/10">
                   <span className="text-sm">
-                    <strong>{selectedServices.length}</strong> serviço(s) · {totalDuration} min
+                    <strong>{selectedServices.length}</strong> serviço(s) ·{" "}
+                    {totalDuration} min
                   </span>
-                  <span className="font-bold gradient-text">{formatCurrency(totalPrice)}</span>
+                  <span className="font-bold gradient-text">
+                    {formatCurrency(totalPrice)}
+                  </span>
                 </div>
               )}
 
@@ -269,10 +309,15 @@ export function BookingForm({ services, config }: { services: Service[]; config:
 
           {step === 2 && (
             <div className="card animate-fade-in p-6">
-              <h2 className="mb-4 text-lg font-heading font-semibold">Escolha data e hora</h2>
+              <h2 className="mb-4 text-lg font-heading font-semibold">
+                Escolha data e hora
+              </h2>
 
               <div className="mb-5">
-                <label htmlFor="booking-date" className="mb-1 block text-sm font-medium">
+                <label
+                  htmlFor="booking-date"
+                  className="mb-1 block text-sm font-medium"
+                >
                   Data
                 </label>
                 <input
@@ -285,18 +330,24 @@ export function BookingForm({ services, config }: { services: Service[]; config:
                 />
                 {config && (
                   <p className="mt-2 text-xs text-gray-400">
-                    Horário de atendimento: {config.openTime} às {config.closeTime}.
+                    Horário de atendimento: {config.openTime} às{" "}
+                    {config.closeTime}.
                   </p>
                 )}
               </div>
 
               {selectedDate && (
                 <div>
-                  <p className="mb-2 block text-sm font-medium">Horários disponíveis</p>
+                  <p className="mb-2 block text-sm font-medium">
+                    Horários disponíveis
+                  </p>
 
                   {loadingSlots ? (
                     <div className="grid grid-cols-3 gap-2 sm:grid-cols-4 lg:grid-cols-5">
-                      {Array.from({ length: 10 }, (_, value) => `slot-skeleton-${value + 1}`).map((id) => (
+                      {Array.from(
+                        { length: 10 },
+                        (_, value) => `slot-skeleton-${value + 1}`,
+                      ).map((id) => (
                         <div
                           key={id}
                           className="h-10 animate-pulse rounded-lg bg-gray-100 dark:bg-gray-800"
@@ -337,8 +388,8 @@ export function BookingForm({ services, config }: { services: Service[]; config:
                             selectedTime === slot.time
                               ? "gradient-bg text-white ring-2 ring-primary-500/30"
                               : slot.available
-                              ? "bg-gray-100 hover:bg-gray-200 dark:bg-gray-800 dark:hover:bg-gray-700"
-                              : "cursor-not-allowed bg-gray-50 text-gray-300 line-through dark:bg-gray-900 dark:text-gray-600"
+                                ? "bg-gray-100 hover:bg-gray-200 dark:bg-gray-800 dark:hover:bg-gray-700"
+                                : "cursor-not-allowed bg-gray-50 text-gray-300 line-through dark:bg-gray-900 dark:text-gray-600"
                           }`}
                         >
                           {slot.time}
@@ -377,11 +428,16 @@ export function BookingForm({ services, config }: { services: Service[]; config:
 
           {step === 3 && (
             <div className="card animate-fade-in p-6">
-              <h2 className="mb-4 text-lg font-heading font-semibold">Os seus dados</h2>
+              <h2 className="mb-4 text-lg font-heading font-semibold">
+                Os seus dados
+              </h2>
 
               <div className="space-y-4">
                 <div>
-                  <label htmlFor="booking-name" className="mb-1 block text-sm font-medium">
+                  <label
+                    htmlFor="booking-name"
+                    className="mb-1 block text-sm font-medium"
+                  >
                     Nome *
                   </label>
                   <div className="relative">
@@ -390,7 +446,9 @@ export function BookingForm({ services, config }: { services: Service[]; config:
                       id="booking-name"
                       type="text"
                       value={form.name}
-                      onChange={(event) => setForm({ ...form, name: event.target.value })}
+                      onChange={(event) =>
+                        setForm({ ...form, name: event.target.value })
+                      }
                       className="input pl-10"
                       placeholder="O seu nome"
                       required
@@ -399,7 +457,10 @@ export function BookingForm({ services, config }: { services: Service[]; config:
                 </div>
 
                 <div>
-                  <label htmlFor="booking-phone" className="mb-1 block text-sm font-medium">
+                  <label
+                    htmlFor="booking-phone"
+                    className="mb-1 block text-sm font-medium"
+                  >
                     Telefone *
                   </label>
                   <div className="relative">
@@ -408,7 +469,9 @@ export function BookingForm({ services, config }: { services: Service[]; config:
                       id="booking-phone"
                       type="tel"
                       value={form.phone}
-                      onChange={(event) => setForm({ ...form, phone: event.target.value })}
+                      onChange={(event) =>
+                        setForm({ ...form, phone: event.target.value })
+                      }
                       className="input pl-10"
                       placeholder="+351 900 000 000"
                       required
@@ -417,7 +480,10 @@ export function BookingForm({ services, config }: { services: Service[]; config:
                 </div>
 
                 <div>
-                  <label htmlFor="booking-email" className="mb-1 block text-sm font-medium">
+                  <label
+                    htmlFor="booking-email"
+                    className="mb-1 block text-sm font-medium"
+                  >
                     Email
                   </label>
                   <div className="relative">
@@ -426,7 +492,9 @@ export function BookingForm({ services, config }: { services: Service[]; config:
                       id="booking-email"
                       type="email"
                       value={form.email}
-                      onChange={(event) => setForm({ ...form, email: event.target.value })}
+                      onChange={(event) =>
+                        setForm({ ...form, email: event.target.value })
+                      }
                       className="input pl-10"
                       placeholder="email@exemplo.com"
                     />
@@ -434,7 +502,10 @@ export function BookingForm({ services, config }: { services: Service[]; config:
                 </div>
 
                 <div>
-                  <label htmlFor="booking-notes" className="mb-1 block text-sm font-medium">
+                  <label
+                    htmlFor="booking-notes"
+                    className="mb-1 block text-sm font-medium"
+                  >
                     Observações
                   </label>
                   <div className="relative">
@@ -442,7 +513,9 @@ export function BookingForm({ services, config }: { services: Service[]; config:
                     <textarea
                       id="booking-notes"
                       value={form.notes}
-                      onChange={(event) => setForm({ ...form, notes: event.target.value })}
+                      onChange={(event) =>
+                        setForm({ ...form, notes: event.target.value })
+                      }
                       className="input pl-10"
                       rows={3}
                       placeholder="Alguma nota adicional..."
@@ -473,7 +546,9 @@ export function BookingForm({ services, config }: { services: Service[]; config:
 
           {step === 4 && (
             <div className="card animate-fade-in p-6">
-              <h2 className="mb-4 text-lg font-heading font-semibold">Confirmar agendamento</h2>
+              <h2 className="mb-4 text-lg font-heading font-semibold">
+                Confirmar agendamento
+              </h2>
 
               {submitError && (
                 <div className="mb-4 flex items-start gap-2 rounded-xl border border-red-200 bg-red-50 p-3 text-sm text-red-700 dark:border-red-900/50 dark:bg-red-950/30 dark:text-red-300">
@@ -490,12 +565,16 @@ export function BookingForm({ services, config }: { services: Service[]; config:
                   <div className="flex justify-between text-sm">
                     <span className="text-gray-400">Serviços</span>
                     <span className="text-right font-medium">
-                      {selectedServiceDetails.map((service) => service.name).join(", ")}
+                      {selectedServiceDetails
+                        .map((service) => service.name)
+                        .join(", ")}
                     </span>
                   </div>
                   <div className="flex justify-between text-sm">
                     <span className="text-gray-400">Data</span>
-                    <span className="font-medium">{formatDateLabel(selectedDate)}</span>
+                    <span className="font-medium">
+                      {formatDateLabel(selectedDate)}
+                    </span>
                   </div>
                   <div className="flex justify-between text-sm">
                     <span className="text-gray-400">Hora</span>
@@ -511,7 +590,9 @@ export function BookingForm({ services, config }: { services: Service[]; config:
                   </div>
                   <div className="flex justify-between border-t border-gray-200 pt-3 dark:border-gray-700">
                     <span className="font-semibold">Total</span>
-                    <span className="text-xl font-bold gradient-text">{formatCurrency(totalPrice)}</span>
+                    <span className="text-xl font-bold gradient-text">
+                      {formatCurrency(totalPrice)}
+                    </span>
                   </div>
                 </div>
               </div>
@@ -532,7 +613,8 @@ export function BookingForm({ services, config }: { services: Service[]; config:
                 >
                   {submitting ? (
                     <>
-                      <RefreshCcw className="h-4 w-4 animate-spin" /> A confirmar...
+                      <RefreshCcw className="h-4 w-4 animate-spin" /> A
+                      confirmar...
                     </>
                   ) : (
                     <>

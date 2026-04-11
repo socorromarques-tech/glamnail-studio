@@ -69,8 +69,12 @@ export function AdminSidebar({ user }: AdminSidebarProps) {
               <Sparkles className="w-5 h-5 text-gray-600 dark:text-gray-300" />
             </div>
             <div>
-              <h1 className="font-heading font-bold text-lg text-gray-900 dark:text-gray-100">GlamNail</h1>
-              <p className="text-[10px] text-gray-400 uppercase tracking-wider">Studio</p>
+              <h1 className="font-heading font-bold text-lg text-gray-900 dark:text-gray-100">
+                GlamNail
+              </h1>
+              <p className="text-[10px] text-gray-400 uppercase tracking-wider">
+                Studio
+              </p>
             </div>
           </Link>
           <button
@@ -108,7 +112,9 @@ export function AdminSidebar({ user }: AdminSidebarProps) {
               {user?.name?.[0] || "A"}
             </div>
             <div className="flex-1 min-w-0">
-              <p className="text-sm font-medium truncate">{user?.name || "Admin"}</p>
+              <p className="text-sm font-medium truncate">
+                {user?.name || "Admin"}
+              </p>
               <p className="text-xs text-gray-400 truncate">{user?.email}</p>
             </div>
           </div>

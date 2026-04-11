@@ -35,8 +35,12 @@ export function TrustBar() {
             <div className="mb-2 flex h-9 w-9 items-center justify-center rounded-xl bg-primary-50 text-primary-500 dark:bg-primary-900/30 dark:text-primary-400">
               <item.icon className="h-4 w-4" />
             </div>
-            <p className="text-sm font-semibold text-gray-900 dark:text-white">{item.title}</p>
-            <p className="mt-1 text-xs text-gray-500 dark:text-gray-400">{item.description}</p>
+            <p className="text-sm font-semibold text-gray-900 dark:text-white">
+              {item.title}
+            </p>
+            <p className="mt-1 text-xs text-gray-500 dark:text-gray-400">
+              {item.description}
+            </p>
           </div>
         ))}
       </div>

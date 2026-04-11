@@ -13,6 +13,7 @@
 ## File Structure
 
 ### Public shell and landing
+
 - Modify: `src/app/(public)/layout.tsx`
 - Modify: `src/app/(public)/page.tsx`
 - Create: `src/components/public/PublicHeader.tsx`
@@ -23,6 +24,7 @@
 - Create: `src/components/public/TestimonialsSection.tsx`
 
 ### Booking funnel
+
 - Modify: `src/app/(public)/booking/page.tsx`
 - Modify: `src/components/booking/BookingForm.tsx`
 - Create: `src/components/booking/BookingProgress.tsx`
@@ -30,9 +32,11 @@
 - Create: `src/components/booking/BookingEmptyState.tsx`
 
 ### Shared styles
+
 - Modify: `src/app/globals.css`
 
 ### Admin polish
+
 - Modify: `src/app/(admin)/dashboard/page.tsx`
 - Modify: `src/components/admin/AppointmentsList.tsx`
 - Modify: `src/components/admin/AdminSidebar.tsx`
@@ -42,6 +46,7 @@
 - Create: `src/components/ui/SkeletonBlock.tsx`
 
 ### Verification
+
 - No test files currently surfaced in the inspected repo. Verification will rely on app build/dev checks plus browser flow testing unless tests are discovered during execution.
 
 ---
@@ -49,6 +54,7 @@
 ## Task 1: Extract The Shared Public Shell
 
 **Files:**
+
 - Create: `src/components/public/PublicHeader.tsx`
 - Create: `src/components/public/PublicFooter.tsx`
 - Modify: `src/app/(public)/layout.tsx`
@@ -56,7 +62,7 @@
 - Modify: `src/app/(public)/booking/page.tsx`
 
 - [ ] **Step 1: Read the current public shell duplication**
-Read:
+      Read:
 - `src/app/(public)/layout.tsx`
 - `src/app/(public)/page.tsx`
 - `src/app/(public)/booking/page.tsx`
@@ -64,7 +70,8 @@ Read:
 Expected: navbar and footer exist only in `page.tsx`, while the public layout returns only `{children}`.
 
 - [ ] **Step 2: Create `PublicHeader`**
-Write `src/components/public/PublicHeader.tsx`:
+      Write `src/components/public/PublicHeader.tsx`:
+
 ```tsx
 import Link from "next/link";
 import { Calendar, Sparkles } from "lucide-react";
@@ -111,7 +118,8 @@ export function PublicHeader({ businessName }: PublicHeaderProps) {
 ```
 
 - [ ] **Step 3: Create `PublicFooter`**
-Write `src/components/public/PublicFooter.tsx`:
+      Write `src/components/public/PublicFooter.tsx`:
+
 ```tsx
 import Link from "next/link";
 import { Sparkles } from "lucide-react";
@@ -126,7 +134,9 @@ export function PublicFooter({ businessName }: PublicFooterProps) {
       <div className="mx-auto flex max-w-6xl flex-col items-center justify-between gap-4 md:flex-row">
         <div className="flex items-center gap-2">
           <Sparkles className="h-4 w-4 text-primary-500" />
-          <span className="text-sm font-medium gradient-text">{businessName}</span>
+          <span className="text-sm font-medium gradient-text">
+            {businessName}
+          </span>
         </div>
         <p className="text-sm text-gray-400">
           © {new Date().getFullYear()} Todos os direitos reservados.
@@ -144,7 +154,8 @@ export function PublicFooter({ businessName }: PublicFooterProps) {
 ```
 
 - [ ] **Step 4: Update public layout to own the shell**
-Replace `src/app/(public)/layout.tsx`:
+      Replace `src/app/(public)/layout.tsx`:
+
 ```tsx
 import { getBusinessConfig } from "@/actions/settings";
 import { PublicFooter } from "@/components/public/PublicFooter";
@@ -171,18 +182,19 @@ export default async function PublicLayout({
 ```
 
 - [ ] **Step 5: Remove duplicated header/footer from landing page**
-Edit `src/app/(public)/page.tsx` to delete the inline navbar and footer blocks and keep only the landing sections.
+      Edit `src/app/(public)/page.tsx` to delete the inline navbar and footer blocks and keep only the landing sections.
 
 - [ ] **Step 6: Remove shell duplication from booking page**
-Edit `src/app/(public)/booking/page.tsx` so it renders only booking content.
+      Edit `src/app/(public)/booking/page.tsx` so it renders only booking content.
 
 - [ ] **Step 7: Verify public shell behavior**
-Run: `npm run lint`
-Run app and verify in browser:
+      Run: `npm run lint`
+      Run app and verify in browser:
 - `/`
 - `/booking`
 
 - [ ] **Step 8: Commit**
+
 ```bash
 git add src/app/\(public\)/layout.tsx src/app/\(public\)/page.tsx src/app/\(public\)/booking/page.tsx src/components/public/PublicHeader.tsx src/components/public/PublicFooter.tsx
 git commit -m "feat: share public site shell across pages"
@@ -193,6 +205,7 @@ git commit -m "feat: share public site shell across pages"
 ## Task 2: Strengthen Landing Page Trust And Conversion
 
 **Files:**
+
 - Create: `src/components/public/PublicSectionHeader.tsx`
 - Create: `src/components/public/TrustBar.tsx`
 - Create: `src/components/public/GallerySection.tsx`
@@ -200,16 +213,16 @@ git commit -m "feat: share public site shell across pages"
 - Modify: `src/app/(public)/page.tsx`
 
 - [ ] **Step 1: Create reusable public section header**
-Write `src/components/public/PublicSectionHeader.tsx`
+      Write `src/components/public/PublicSectionHeader.tsx`
 
 - [ ] **Step 2: Create trust bar**
-Write `src/components/public/TrustBar.tsx` with 4 trust items
+      Write `src/components/public/TrustBar.tsx` with 4 trust items
 
 - [ ] **Step 3: Create gallery section**
-Write `src/components/public/GallerySection.tsx`
+      Write `src/components/public/GallerySection.tsx`
 
 - [ ] **Step 4: Create testimonials section**
-Write `src/components/public/TestimonialsSection.tsx`
+      Write `src/components/public/TestimonialsSection.tsx`
 
 - [ ] **Step 5: Rewrite landing page section composition**
 - tighten hero copy
@@ -217,9 +230,10 @@ Write `src/components/public/TestimonialsSection.tsx`
 - keep services section and contact CTA
 
 - [ ] **Step 6: Verify landing page conversion layout**
-Run browser checks: hero CTA visible fast, trust content appears before contact footer
+      Run browser checks: hero CTA visible fast, trust content appears before contact footer
 
 - [ ] **Step 7: Commit**
+
 ```bash
 git add src/app/\(public\)/page.tsx src/components/public/
 git commit -m "feat: add trust-focused public landing sections"
@@ -230,24 +244,26 @@ git commit -m "feat: add trust-focused public landing sections"
 ## Task 3: Reframe Booking Page Into A Mixed Theme Funnel
 
 **Files:**
+
 - Modify: `src/app/(public)/booking/page.tsx`
 - Modify: `src/components/booking/BookingForm.tsx`
 - Create: `src/components/booking/BookingProgress.tsx`
 - Create: `src/components/booking/BookingSummary.tsx`
 
 - [ ] **Step 1: Create booking progress component**
-Write `src/components/booking/BookingProgress.tsx`
+      Write `src/components/booking/BookingProgress.tsx`
 
 - [ ] **Step 2: Create booking summary component**
-Write `src/components/booking/BookingSummary.tsx`
+      Write `src/components/booking/BookingSummary.tsx`
 
 - [ ] **Step 3: Restructure booking page layout**
-Edit `src/app/(public)/booking/page.tsx` with branded header, 2-column layout with summary sidebar
+      Edit `src/app/(public)/booking/page.tsx` with branded header, 2-column layout with summary sidebar
 
 - [ ] **Step 4: Wire booking progress and summary into `BookingForm`**
-Import components, derive selected service details
+      Import components, derive selected service details
 
 - [ ] **Step 5: Replace single-column wrapper with two-column layout**
+
 ```tsx
 <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_320px] xl:grid-cols-[minmax(0,1fr)_360px]">
   <div className="space-y-6">
@@ -260,15 +276,18 @@ Import components, derive selected service details
 ```
 
 - [ ] **Step 6: Lighten the step cards**
-Replace `className="card p-6 animate-fade-in"` with:
+      Replace `className="card p-6 animate-fade-in"` with:
+
 ```tsx
-className="animate-fade-in rounded-[2rem] border border-primary-100 bg-white p-6 shadow-sm dark:border-gray-800 dark:bg-gray-900"
+className =
+  "animate-fade-in rounded-[2rem] border border-primary-100 bg-white p-6 shadow-sm dark:border-gray-800 dark:bg-gray-900";
 ```
 
 - [ ] **Step 7: Verify booking mixed-theme layout**
-Run lint and browser check
+      Run lint and browser check
 
 - [ ] **Step 8: Commit**
+
 ```bash
 git add src/app/\(public\)/booking/page.tsx src/components/booking/BookingForm.tsx src/components/booking/BookingProgress.tsx src/components/booking/BookingSummary.tsx
 git commit -m "feat: redesign booking funnel layout"
@@ -279,10 +298,12 @@ git commit -m "feat: redesign booking funnel layout"
 ## Task 4: Improve Service Selection Clarity
 
 **Files:**
+
 - Modify: `src/components/booking/BookingForm.tsx`
 
 - [ ] **Step 1: Update service cards to feel like selectable products**
-Use:
+      Use:
+
 ```tsx
 className={`group rounded-[1.5rem] border p-4 text-left transition-all ${
   selectedServices.includes(s.id)
@@ -292,19 +313,21 @@ className={`group rounded-[1.5rem] border p-4 text-left transition-all ${
 ```
 
 - [ ] **Step 2: Tighten typography in service cards**
+
 ```tsx
 <p className="font-medium text-gray-900 dark:text-white">{s.name}</p>
 ```
 
 - [ ] **Step 3: Improve selected-state signal**
-Use a circular checkmark indicator.
+      Use a circular checkmark indicator.
 
 - [ ] **Step 4: Remove the small summary bar under the services grid**
-Delete the inline summary block.
+      Delete the inline summary block.
 
 - [ ] **Step 5: Verify selection UX**
 
 - [ ] **Step 6: Commit**
+
 ```bash
 git add src/components/booking/BookingForm.tsx
 git commit -m "feat: improve booking service selection clarity"
@@ -315,16 +338,18 @@ git commit -m "feat: improve booking service selection clarity"
 ## Task 5: Redesign Date And Time Step With Strong Recovery States
 
 **Files:**
+
 - Modify: `src/components/booking/BookingForm.tsx`
 - Create: `src/components/booking/BookingEmptyState.tsx`
 
 - [ ] **Step 1: Create reusable booking empty state**
-Write `src/components/booking/BookingEmptyState.tsx`
+      Write `src/components/booking/BookingEmptyState.tsx`
 
 - [ ] **Step 2: Use the new empty state in step 2**
-Replace the current empty slot paragraph with the empty state component.
+      Replace the current empty slot paragraph with the empty state component.
 
 - [ ] **Step 3: Add helper copy above the date input**
+
 ```tsx
 <p className="mb-6 text-sm text-gray-500 dark:text-gray-400">
   Escolha uma data e confirme o horário com melhor encaixe para si.
@@ -332,7 +357,7 @@ Replace the current empty slot paragraph with the empty state component.
 ```
 
 - [ ] **Step 4: Improve date field presentation**
-Wrap the date field with a border container and show business hours from config.
+      Wrap the date field with a border container and show business hours from config.
 
 - [ ] **Step 5: Improve slot grid presentation**
 - Add label before the grid
@@ -340,7 +365,8 @@ Wrap the date field with a border container and show business hours from config.
 - Improve slot button styling
 
 - [ ] **Step 6: Add pre-selection empty state**
-Before a date is chosen, render:
+      Before a date is chosen, render:
+
 ```tsx
 <BookingEmptyState
   title="Escolha primeiro uma data"
@@ -349,6 +375,7 @@ Before a date is chosen, render:
 ```
 
 - [ ] **Step 7: Add loading skeleton for slots**
+
 ```tsx
 <div className="flex items-center justify-center gap-2 py-8">
   <div className="h-5 w-5 animate-spin rounded-full border-2 border-primary-500/30 border-t-primary-500" />
@@ -359,6 +386,7 @@ Before a date is chosen, render:
 - [ ] **Step 8: Verify date/time step behavior**
 
 - [ ] **Step 9: Commit**
+
 ```bash
 git add src/components/booking/BookingForm.tsx src/components/booking/BookingEmptyState.tsx
 git commit -m "feat: redesign booking date/time step with recovery states"
@@ -369,10 +397,12 @@ git commit -m "feat: redesign booking date/time step with recovery states"
 ## Task 6: Upgrade Booking Success And Error Feedback
 
 **Files:**
+
 - Modify: `src/components/booking/BookingForm.tsx`
 
 - [ ] **Step 1: Improve success state**
-Replace success rendering with:
+      Replace success rendering with:
+
 ```tsx
 <div className="animate-fade-in rounded-[2rem] border border-emerald-200 bg-white p-8 text-center dark:border-emerald-800 dark:bg-gray-900">
   <div className="mx-auto mb-6 flex h-16 w-16 items-center justify-center rounded-full bg-emerald-100 shadow-lg shadow-emerald-500/20 dark:bg-emerald-900/30">
@@ -382,7 +412,8 @@ Replace success rendering with:
     Agendamento Confirmado!
   </h2>
   <p className="mx-auto mt-3 max-w-md text-gray-500 dark:text-gray-400">
-    O seu tratamento foi reservado com sucesso. Receberá uma confirmação em breve.
+    O seu tratamento foi reservado com sucesso. Receberá uma confirmação em
+    breve.
   </p>
 
   <div className="mx-auto mt-8 max-w-sm rounded-2xl bg-gray-50 p-5 dark:bg-gray-800/50">
@@ -397,7 +428,9 @@ Replace success rendering with:
       </div>
       <div className="flex justify-between border-t border-gray-200 pt-3 dark:border-gray-700">
         <span className="font-semibold">Total</span>
-        <span className="font-bold gradient-text">{formatCurrency(totalPrice)}</span>
+        <span className="font-bold gradient-text">
+          {formatCurrency(totalPrice)}
+        </span>
       </div>
     </div>
   </div>
@@ -411,7 +444,8 @@ Replace success rendering with:
 ```
 
 - [ ] **Step 2: Add error state handling**
-Wrap the submission in try/catch and show a toast/alert:
+      Wrap the submission in try/catch and show a toast/alert:
+
 ```tsx
 const [error, setError] = useState<string | null>(null);
 
@@ -422,7 +456,9 @@ const handleSubmit = async () => {
     // ... existing submission
     setSuccess(true);
   } catch (err) {
-    setError("Não foi possível criar o agendamento. Tente novamente ou contacte-nos.");
+    setError(
+      "Não foi possível criar o agendamento. Tente novamente ou contacte-nos.",
+    );
   } finally {
     setSubmitting(false);
   }
@@ -430,18 +466,22 @@ const handleSubmit = async () => {
 ```
 
 Display error above the action buttons:
+
 ```tsx
-{error && (
-  <div className="rounded-xl border border-red-200 bg-red-50 p-4 text-sm text-red-600 dark:border-red-800 dark:bg-red-900/20 dark:text-red-400">
-    {error}
-  </div>
-)}
+{
+  error && (
+    <div className="rounded-xl border border-red-200 bg-red-50 p-4 text-sm text-red-600 dark:border-red-800 dark:bg-red-900/20 dark:text-red-400">
+      {error}
+    </div>
+  );
+}
 ```
 
 - [ ] **Step 3: Verify error and success feedback**
-Browser test booking flow to completion.
+      Browser test booking flow to completion.
 
 - [ ] **Step 4: Commit**
+
 ```bash
 git add src/components/booking/BookingForm.tsx
 git commit -m "feat: improve booking feedback states"
@@ -452,11 +492,13 @@ git commit -m "feat: improve booking feedback states"
 ## Task 7: Add Shared UI Primitives
 
 **Files:**
+
 - Create: `src/components/ui/EmptyState.tsx`
 - Create: `src/components/ui/SkeletonBlock.tsx`
 
 - [ ] **Step 1: Create reusable empty state**
-Write `src/components/ui/EmptyState.tsx`:
+      Write `src/components/ui/EmptyState.tsx`:
+
 ```tsx
 type EmptyStateProps = {
   icon: React.ElementType;
@@ -465,7 +507,12 @@ type EmptyStateProps = {
   action?: React.ReactNode;
 };
 
-export function EmptyState({ icon: Icon, title, description, action }: EmptyStateProps) {
+export function EmptyState({
+  icon: Icon,
+  title,
+  description,
+  action,
+}: EmptyStateProps) {
   return (
     <div className="flex flex-col items-center justify-center py-12 text-center">
       <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-2xl bg-gray-100 dark:bg-gray-800">
@@ -484,7 +531,8 @@ export function EmptyState({ icon: Icon, title, description, action }: EmptyStat
 ```
 
 - [ ] **Step 2: Create reusable skeleton**
-Write `src/components/ui/SkeletonBlock.tsx`:
+      Write `src/components/ui/SkeletonBlock.tsx`:
+
 ```tsx
 type SkeletonBlockProps = {
   className?: string;
@@ -492,12 +540,15 @@ type SkeletonBlockProps = {
 
 export function SkeletonBlock({ className = "" }: SkeletonBlockProps) {
   return (
-    <div className={`animate-pulse rounded-lg bg-gray-200 dark:bg-gray-700 ${className}`} />
+    <div
+      className={`animate-pulse rounded-lg bg-gray-200 dark:bg-gray-700 ${className}`}
+    />
   );
 }
 ```
 
 - [ ] **Step 3: Commit**
+
 ```bash
 git add src/components/ui/EmptyState.tsx src/components/ui/SkeletonBlock.tsx
 git commit -m "feat: add shared UI primitives"
@@ -508,13 +559,15 @@ git commit -m "feat: add shared UI primitives"
 ## Task 8: Admin Visual Restraint Pass
 
 **Files:**
+
 - Modify: `src/app/globals.css`
 - Modify: `src/app/(admin)/dashboard/page.tsx`
 - Modify: `src/components/admin/AppointmentsList.tsx`
 - Modify: `src/components/admin/AdminSidebar.tsx`
 
 - [ ] **Step 1: Add admin-specific card style**
-In `globals.css`, add:
+      In `globals.css`, add:
+
 ```css
 @layer components {
   .card-admin {
@@ -530,11 +583,14 @@ In `globals.css`, add:
 ```
 
 - [ ] **Step 2: Simplify dashboard stat cards**
-In `src/app/(admin)/dashboard/page.tsx`, replace stat card styles:
+      In `src/app/(admin)/dashboard/page.tsx`, replace stat card styles:
+
 ```tsx
-className="stat-card-admin"
+className = "stat-card-admin";
 ```
+
 Remove gradient backgrounds from icons, use simple solid backgrounds:
+
 ```tsx
 <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-gray-100 dark:bg-gray-800">
   <stat.icon className="h-5 w-5 text-gray-500" />
@@ -542,25 +598,29 @@ Remove gradient backgrounds from icons, use simple solid backgrounds:
 ```
 
 - [ ] **Step 3: Simplify appointments list cards**
-In `src/components/admin/AppointmentsList.tsx`, replace:
+      In `src/components/admin/AppointmentsList.tsx`, replace:
+
 ```tsx
-className="card p-5"
+className = "card p-5";
 ```
+
 with:
+
 ```tsx
-className="card-admin"
+className = "card-admin";
 ```
 
 - [ ] **Step 4: Reduce sidebar visual weight**
-In `src/components/admin/AdminSidebar.tsx`, simplify brand section and user area, remove excessive shadow and gradient.
+      In `src/components/admin/AdminSidebar.tsx`, simplify brand section and user area, remove excessive shadow and gradient.
 
 - [ ] **Step 5: Verify admin visual changes**
-Run app and check:
+      Run app and check:
 - `/dashboard`
 - `/appointments`
 - Sidebar on mobile and desktop
 
 - [ ] **Step 6: Commit**
+
 ```bash
 git add src/app/globals.css src/app/\(admin\)/dashboard/page.tsx src/components/admin/AppointmentsList.tsx src/components/admin/AdminSidebar.tsx
 git commit -m "feat: apply admin visual restraint"
@@ -571,9 +631,11 @@ git commit -m "feat: apply admin visual restraint"
 ## Task 9: Final Browser Verification
 
 **Files:**
+
 - Run verification commands
 
 - [ ] **Step 1: Run full app verification**
+
 ```bash
 npm run lint
 npm run build
@@ -596,6 +658,7 @@ npm run build
 - `/appointments` - more scannable list
 
 - [ ] **Step 5: Commit final verification**
+
 ```bash
 git add -A
 git commit -m "feat: complete conversion-first redesign - verification pass"

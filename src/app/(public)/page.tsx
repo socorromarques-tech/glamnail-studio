@@ -1,4 +1,12 @@
-import { ArrowRight, Calendar, Clock, MapPin, Phone, Scissors, Star } from "lucide-react";
+import {
+  ArrowRight,
+  Calendar,
+  Clock,
+  MapPin,
+  Phone,
+  Scissors,
+  Star,
+} from "lucide-react";
 import Link from "next/link";
 
 import { getServices } from "@/actions/services";
@@ -12,7 +20,10 @@ import { formatCurrency } from "@/lib/utils";
 export const dynamic = "force-dynamic";
 
 export default async function LandingPage() {
-  const [services, config] = await Promise.all([getServices(), getBusinessConfig()]);
+  const [services, config] = await Promise.all([
+    getServices(),
+    getBusinessConfig(),
+  ]);
 
   return (
     <div className="min-h-screen">
@@ -34,11 +45,15 @@ export default async function LandingPage() {
           </h1>
 
           <p className="mx-auto mb-8 max-w-2xl text-lg text-gray-500 dark:text-gray-400">
-            Marcação rápida, atendimento pontual e acabamento profissional para você sair pronta para brilhar.
+            Marcação rápida, atendimento pontual e acabamento profissional para
+            você sair pronta para brilhar.
           </p>
 
           <div className="flex flex-col items-center justify-center gap-4 sm:flex-row">
-            <Link href="/booking" className="btn-primary flex items-center gap-2 px-8 py-3 text-lg">
+            <Link
+              href="/booking"
+              className="btn-primary flex items-center gap-2 px-8 py-3 text-lg"
+            >
               Marcar Sessão <ArrowRight className="h-5 w-5" />
             </Link>
             <Link href="#servicos" className="btn-secondary px-8 py-3 text-lg">
@@ -80,14 +95,21 @@ export default async function LandingPage() {
               >
                 <div
                   className="mb-4 flex h-12 w-12 items-center justify-center rounded-2xl transition-transform group-hover:scale-110"
-                  style={{ backgroundColor: `${service.color}15`, color: service.color }}
+                  style={{
+                    backgroundColor: `${service.color}15`,
+                    color: service.color,
+                  }}
                 >
                   <Scissors className="h-6 w-6" />
                 </div>
                 <h3 className="mb-2 text-lg font-semibold">{service.name}</h3>
-                <p className="mb-4 text-sm text-gray-500 dark:text-gray-400">{service.description}</p>
+                <p className="mb-4 text-sm text-gray-500 dark:text-gray-400">
+                  {service.description}
+                </p>
                 <div className="flex items-center justify-between border-t border-gray-100 pt-4 dark:border-gray-800">
-                  <span className="text-xl font-bold gradient-text">{formatCurrency(Number(service.price))}</span>
+                  <span className="text-xl font-bold gradient-text">
+                    {formatCurrency(Number(service.price))}
+                  </span>
                   <span className="flex items-center gap-1 text-sm text-gray-400">
                     <Clock className="h-4 w-4" />
                     {service.duration} min
@@ -98,7 +120,10 @@ export default async function LandingPage() {
           </div>
 
           <div className="mt-10 text-center">
-            <Link href="/booking" className="btn-primary inline-flex items-center gap-2">
+            <Link
+              href="/booking"
+              className="btn-primary inline-flex items-center gap-2"
+            >
               Agendar um Serviço <ArrowRight className="h-4 w-4" />
             </Link>
           </div>
@@ -113,20 +138,27 @@ export default async function LandingPage() {
           <div className="card gradient-bg relative overflow-hidden p-8 text-white md:p-12">
             <div className="absolute -right-20 -top-20 h-60 w-60 rounded-full bg-white/10 blur-2xl" />
             <div className="relative">
-              <h2 className="mb-6 text-center text-3xl font-heading font-bold">Visite-nos</h2>
+              <h2 className="mb-6 text-center text-3xl font-heading font-bold">
+                Visite-nos
+              </h2>
               <div className="grid grid-cols-1 gap-6 text-center md:grid-cols-3">
                 <div>
                   <MapPin className="mx-auto mb-2 h-6 w-6 opacity-80" />
-                  <p className="text-sm opacity-90">{config?.address || "Rua das Flores, 123 - Lisboa"}</p>
+                  <p className="text-sm opacity-90">
+                    {config?.address || "Rua das Flores, 123 - Lisboa"}
+                  </p>
                 </div>
                 <div>
                   <Phone className="mx-auto mb-2 h-6 w-6 opacity-80" />
-                  <p className="text-sm opacity-90">{config?.phone || "+351 912 345 678"}</p>
+                  <p className="text-sm opacity-90">
+                    {config?.phone || "+351 912 345 678"}
+                  </p>
                 </div>
                 <div>
                   <Clock className="mx-auto mb-2 h-6 w-6 opacity-80" />
                   <p className="text-sm opacity-90">
-                    {config?.openTime || "09:00"} - {config?.closeTime || "18:00"}
+                    {config?.openTime || "09:00"} -{" "}
+                    {config?.closeTime || "18:00"}
                   </p>
                 </div>
               </div>

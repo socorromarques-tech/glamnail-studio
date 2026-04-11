@@ -26,7 +26,9 @@ export function BookingEmptyState({
         {icon ?? <Sparkles className="h-5 w-5" />}
       </div>
       <h3 className="mb-1 font-medium">{title}</h3>
-      <p className="mx-auto mb-4 max-w-sm text-sm text-gray-500 dark:text-gray-400">{description}</p>
+      <p className="mx-auto mb-4 max-w-sm text-sm text-gray-500 dark:text-gray-400">
+        {description}
+      </p>
 
       {(actionLabel || secondaryActionLabel) && (
         <div className="flex flex-wrap items-center justify-center gap-2">
@@ -36,7 +38,11 @@ export function BookingEmptyState({
             </button>
           )}
           {secondaryActionLabel && onSecondaryAction && (
-            <button type="button" onClick={onSecondaryAction} className="btn-ghost">
+            <button
+              type="button"
+              onClick={onSecondaryAction}
+              className="btn-ghost"
+            >
               {secondaryActionLabel}
             </button>
           )}

@@ -32,11 +32,18 @@ export function TestimonialsSection() {
             <article key={item.name} className="card p-6">
               <div className="mb-3 flex items-center gap-1 text-amber-400">
                 {Array.from({ length: 5 }).map((_, i) => (
-                  <Star key={`${item.name}-${i}`} className="h-4 w-4 fill-current" />
+                  <Star
+                    key={`${item.name}-${i}`}
+                    className="h-4 w-4 fill-current"
+                  />
                 ))}
               </div>
-              <p className="text-sm text-gray-600 dark:text-gray-300">“{item.text}”</p>
-              <p className="mt-4 text-sm font-semibold text-gray-900 dark:text-white">{item.name}</p>
+              <p className="text-sm text-gray-600 dark:text-gray-300">
+                “{item.text}”
+              </p>
+              <p className="mt-4 text-sm font-semibold text-gray-900 dark:text-white">
+                {item.name}
+              </p>
             </article>
           ))}
         </div>

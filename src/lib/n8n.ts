@@ -3,7 +3,7 @@ import { AppointmentWithRelations, N8nWebhookPayload } from "@/types";
 export async function triggerN8nWebhook(
   event: N8nWebhookPayload["event"],
   appointment: AppointmentWithRelations,
-  businessName: string
+  businessName: string,
 ): Promise<boolean> {
   const webhookUrl = process.env.N8N_WEBHOOK_URL;
 

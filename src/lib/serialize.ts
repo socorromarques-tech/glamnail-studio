@@ -1,5 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-
 /**
  * Deep serializes Prisma objects to plain JSON-safe objects.
  * Converts Decimal to number, Date to ISO string.
@@ -12,6 +10,6 @@ export function serialize<T>(data: T): T {
         return Number(value);
       }
       return value;
-    })
+    }),
   );
 }

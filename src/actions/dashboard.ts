@@ -16,41 +16,53 @@ export async function getDashboardStats() {
   endOfWeek.setDate(endOfWeek.getDate() + 7);
 
   const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
-  const endOfMonth = new Date(now.getFullYear(), now.getMonth() + 1, 0, 23, 59, 59);
+  const endOfMonth = new Date(
+    now.getFullYear(),
+    now.getMonth() + 1,
+    0,
+    23,
+    59,
+    59,
+  );
 
-  const [todayAppointments, weekAppointments, monthlyCompleted, totalClients, upcomingAppointments] =
-    await Promise.all([
-      prisma.appointment.count({
-        where: { date: { gte: today, lt: tomorrow } },
-      }),
-      prisma.appointment.count({
-        where: { date: { gte: startOfWeek, lt: endOfWeek } },
-      }),
-      prisma.appointment.findMany({
-        where: {
-          date: { gte: startOfMonth, lte: endOfMonth },
-          status: "COMPLETED",
-        },
-        select: { totalPrice: true },
-      }),
-      prisma.client.count(),
-      prisma.appointment.findMany({
-        where: {
-          date: { gte: now },
-          status: { in: ["PENDING", "CONFIRMED"] },
-        },
-        include: {
-          client: true,
-          services: { include: { service: true } },
-        },
-        orderBy: { date: "asc" },
-        take: 5,
-      }),
-    ]);
+  const [
+    todayAppointments,
+    weekAppointments,
+    monthlyCompleted,
+    totalClients,
+    upcomingAppointments,
+  ] = await Promise.all([
+    prisma.appointment.count({
+      where: { date: { gte: today, lt: tomorrow } },
+    }),
+    prisma.appointment.count({
+      where: { date: { gte: startOfWeek, lt: endOfWeek } },
+    }),
+    prisma.appointment.findMany({
+      where: {
+        date: { gte: startOfMonth, lte: endOfMonth },
+        status: "COMPLETED",
+      },
+      select: { totalPrice: true },
+    }),
+    prisma.client.count(),
+    prisma.appointment.findMany({
+      where: {
+        date: { gte: now },
+        status: { in: ["PENDING", "CONFIRMED"] },
+      },
+      include: {
+        client: true,
+        services: { include: { service: true } },
+      },
+      orderBy: { date: "asc" },
+      take: 5,
+    }),
+  ]);
 
   const monthRevenue = monthlyCompleted.reduce(
     (sum, a) => sum + Number(a.totalPrice),
-    0
+    0,
   );
 
   return serialize({

@@ -30,7 +30,9 @@ export function GallerySection() {
                 className={`h-52 bg-gradient-to-br ${item.tone} dark:from-gray-800 dark:to-gray-700 transition-transform duration-300 group-hover:scale-[1.02]`}
               />
               <div className="p-4">
-                <p className="text-sm font-medium text-gray-800 dark:text-gray-100">#{index + 1} {item.title}</p>
+                <p className="text-sm font-medium text-gray-800 dark:text-gray-100">
+                  #{index + 1} {item.title}
+                </p>
               </div>
             </article>
           ))}

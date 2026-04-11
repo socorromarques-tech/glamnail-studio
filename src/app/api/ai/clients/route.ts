@@ -16,7 +16,7 @@ export async function POST(request: Request) {
     if (!result.success) {
       return NextResponse.json(
         { error: "Dados inválidos", details: result.error.flatten() },
-        { status: 400 }
+        { status: 400 },
       );
     }
 
@@ -38,12 +38,12 @@ export async function POST(request: Request) {
 
     if (!client) {
       return NextResponse.json(
-        { 
+        {
           error: "Cliente não encontrado",
           needsRegistration: true,
-          message: "Por favor, forneça o seu nome para criar o seu cadastro."
+          message: "Por favor, forneça o seu nome para criar o seu cadastro.",
         },
-        { status: 404 }
+        { status: 404 },
       );
     }
 
@@ -59,7 +59,7 @@ export async function POST(request: Request) {
     console.error("Error processing client:", error);
     return NextResponse.json(
       { error: "Erro ao processar cliente" },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }

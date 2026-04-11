@@ -1,5 +1,10 @@
 import { getDashboardStats, getWeeklyChartData } from "@/actions/dashboard";
-import { formatCurrency, formatTime, getStatusColor, getStatusLabel } from "@/lib/utils";
+import {
+  formatCurrency,
+  formatTime,
+  getStatusColor,
+  getStatusLabel,
+} from "@/lib/utils";
 import {
   Calendar,
   Clock,
@@ -71,9 +76,7 @@ export default async function DashboardPage() {
                 <p className="text-2xl font-bold mt-1">{stat.value}</p>
                 <p className="text-xs text-gray-400 mt-1">{stat.subtitle}</p>
               </div>
-              <div
-                className="w-10 h-10 rounded-xl bg-gray-100 dark:bg-gray-800 flex items-center justify-center"
-              >
+              <div className="w-10 h-10 rounded-xl bg-gray-100 dark:bg-gray-800 flex items-center justify-center">
                 <stat.icon className="w-5 h-5 text-gray-600 dark:text-gray-300" />
               </div>
             </div>
@@ -90,14 +93,21 @@ export default async function DashboardPage() {
           </h2>
           <div className="flex items-end gap-2 h-40">
             {weeklyData.map((day) => {
-              const maxVal = Math.max(...weeklyData.map((d) => d.appointments), 1);
+              const maxVal = Math.max(
+                ...weeklyData.map((d) => d.appointments),
+                1,
+              );
               const height = (day.appointments / maxVal) * 100;
               return (
-                <div key={day.name} className="flex-1 flex flex-col items-center gap-1">
+                <div
+                  key={day.name}
+                  className="flex-1 flex flex-col items-center gap-1"
+                >
                   <span className="text-xs font-medium text-gray-500">
                     {day.appointments}
                   </span>
-                  <div className="w-full rounded-t-lg bg-gray-100 dark:bg-gray-800 relative overflow-hidden"
+                  <div
+                    className="w-full rounded-t-lg bg-gray-100 dark:bg-gray-800 relative overflow-hidden"
                     style={{ height: "120px" }}
                   >
                     <div

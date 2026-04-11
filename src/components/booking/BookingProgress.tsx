@@ -25,15 +25,17 @@ export function BookingProgress({ currentStep, steps }: BookingProgressProps) {
                   isCompleted
                     ? "border-primary-500 bg-primary-500 text-white"
                     : isCurrent
-                    ? "border-primary-500 text-primary-600 dark:text-primary-400"
-                    : "border-gray-200 bg-white text-gray-400 dark:border-gray-700 dark:bg-gray-900"
+                      ? "border-primary-500 text-primary-600 dark:text-primary-400"
+                      : "border-gray-200 bg-white text-gray-400 dark:border-gray-700 dark:bg-gray-900"
                 }`}
               >
                 {isCompleted ? <Check className="h-4 w-4" /> : step.num}
               </div>
               <span
                 className={`hidden text-xs sm:block ${
-                  isCurrent ? "font-medium text-primary-600 dark:text-primary-400" : "text-gray-400"
+                  isCurrent
+                    ? "font-medium text-primary-600 dark:text-primary-400"
+                    : "text-gray-400"
                 }`}
               >
                 {step.label}
@@ -43,7 +45,9 @@ export function BookingProgress({ currentStep, steps }: BookingProgressProps) {
             {index < steps.length - 1 && (
               <div
                 className={`mx-2 h-px flex-1 ${
-                  isCompleted ? "bg-primary-500" : "bg-gray-200 dark:bg-gray-700"
+                  isCompleted
+                    ? "bg-primary-500"
+                    : "bg-gray-200 dark:bg-gray-700"
                 }`}
               />
             )}

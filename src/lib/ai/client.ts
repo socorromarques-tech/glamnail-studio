@@ -143,7 +143,7 @@ export const tools = [
 
 export async function callTool(
   toolName: string,
-  args: Record<string, unknown>
+  args: Record<string, unknown>,
 ): Promise<string> {
   const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000";
 
@@ -155,7 +155,7 @@ export async function callTool(
         return data.services
           .map(
             (s: Service) =>
-              `• ${s.name}: ${s.price}€ (${s.duration} min)${s.description ? ` - ${s.description}` : ""}`
+              `• ${s.name}: ${s.price}€ (${s.duration} min)${s.description ? ` - ${s.description}` : ""}`,
           )
           .join("\n");
       }
@@ -165,7 +165,7 @@ export async function callTool(
     case "get_availability": {
       const { date, duration = 60 } = args;
       const res = await fetch(
-        `${baseUrl}/api/ai/availability?date=${date}&duration=${duration}`
+        `${baseUrl}/api/ai/availability?date=${date}&duration=${duration}`,
       );
       const data = await res.json();
       if (data.slots) {

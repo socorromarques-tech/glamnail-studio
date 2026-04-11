@@ -37,14 +37,62 @@ async function main() {
 
   // Create services
   const services = [
-    { name: "Manicure Simples", description: "Limpeza, corte e modelação das unhas", price: 15, duration: 30, color: "#E91E63" },
-    { name: "Manicure com Verniz", description: "Manicure simples + aplicação de verniz", price: 20, duration: 45, color: "#9C27B0" },
-    { name: "Manicure com Gel", description: "Aplicação de verniz gel com secagem UV", price: 30, duration: 60, color: "#FF4081" },
-    { name: "Pedicure Simples", description: "Limpeza e cuidado dos pés", price: 20, duration: 45, color: "#4CAF50" },
-    { name: "Pedicure com Verniz", description: "Pedicure completa + verniz", price: 25, duration: 60, color: "#00BCD4" },
-    { name: "Aplicação de Unhas de Gel", description: "Alongamento completo com gel", price: 45, duration: 90, color: "#FF6F00" },
-    { name: "Nail Art", description: "Decoração artística das unhas", price: 10, duration: 30, color: "#7C4DFF" },
-    { name: "Remoção de Gel", description: "Remoção segura de verniz gel", price: 10, duration: 20, color: "#795548" },
+    {
+      name: "Manicure Simples",
+      description: "Limpeza, corte e modelação das unhas",
+      price: 15,
+      duration: 30,
+      color: "#E91E63",
+    },
+    {
+      name: "Manicure com Verniz",
+      description: "Manicure simples + aplicação de verniz",
+      price: 20,
+      duration: 45,
+      color: "#9C27B0",
+    },
+    {
+      name: "Manicure com Gel",
+      description: "Aplicação de verniz gel com secagem UV",
+      price: 30,
+      duration: 60,
+      color: "#FF4081",
+    },
+    {
+      name: "Pedicure Simples",
+      description: "Limpeza e cuidado dos pés",
+      price: 20,
+      duration: 45,
+      color: "#4CAF50",
+    },
+    {
+      name: "Pedicure com Verniz",
+      description: "Pedicure completa + verniz",
+      price: 25,
+      duration: 60,
+      color: "#00BCD4",
+    },
+    {
+      name: "Aplicação de Unhas de Gel",
+      description: "Alongamento completo com gel",
+      price: 45,
+      duration: 90,
+      color: "#FF6F00",
+    },
+    {
+      name: "Nail Art",
+      description: "Decoração artística das unhas",
+      price: 10,
+      duration: 30,
+      color: "#7C4DFF",
+    },
+    {
+      name: "Remoção de Gel",
+      description: "Remoção segura de verniz gel",
+      price: 10,
+      duration: 20,
+      color: "#795548",
+    },
   ];
 
   for (const service of services) {
@@ -53,10 +101,18 @@ async function main() {
 
   // Create sample clients
   const clients = [
-    { name: "Maria Silva", phone: "+351 911 111 111", email: "maria@email.com" },
+    {
+      name: "Maria Silva",
+      phone: "+351 911 111 111",
+      email: "maria@email.com",
+    },
     { name: "Ana Santos", phone: "+351 922 222 222", email: "ana@email.com" },
     { name: "Joana Costa", phone: "+351 933 333 333" },
-    { name: "Sofia Ferreira", phone: "+351 944 444 444", email: "sofia@email.com" },
+    {
+      name: "Sofia Ferreira",
+      phone: "+351 944 444 444",
+      email: "sofia@email.com",
+    },
     { name: "Beatriz Oliveira", phone: "+351 955 555 555" },
   ];
 

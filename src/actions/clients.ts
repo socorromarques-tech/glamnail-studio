@@ -60,7 +60,7 @@ export async function createClient(data: {
 
 export async function updateClient(
   id: string,
-  data: { name?: string; phone?: string; email?: string; notes?: string }
+  data: { name?: string; phone?: string; email?: string; notes?: string },
 ) {
   const client = await prisma.client.update({ where: { id }, data });
   revalidatePath("/clients");

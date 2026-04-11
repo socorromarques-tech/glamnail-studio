@@ -40,7 +40,7 @@ export async function updateService(
     duration?: number;
     color?: string;
     active?: boolean;
-  }
+  },
 ) {
   const service = await prisma.service.update({ where: { id }, data });
   revalidatePath("/services");

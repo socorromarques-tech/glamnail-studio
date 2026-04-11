@@ -20,12 +20,18 @@ interface EvolutionWebhookPayload {
   };
 }
 
-const conversationStore = new Map<string, Array<{ role: "user" | "assistant"; content: string }>>();
+const conversationStore = new Map<
+  string,
+  Array<{ role: "user" | "assistant"; content: string }>
+>();
 
 async function processChat(phone: string, message: string) {
   const history = conversationStore.get(phone) || [];
 
-  const messages: Array<{ role: "system" | "user" | "assistant"; content: string }> = [
+  const messages: Array<{
+    role: "system" | "user" | "assistant";
+    content: string;
+  }> = [
     { role: "system", content: getSystemPrompt() },
     ...history.map((m) => ({ role: m.role, content: m.content })),
     { role: "user", content: message },
@@ -36,7 +42,11 @@ async function processChat(phone: string, message: string) {
     messages,
     tools: tools.map((t) => ({
       type: "function" as const,
-      function: { name: t.name, description: t.description, parameters: t.parameters },
+      function: {
+        name: t.name,
+        description: t.description,
+        parameters: t.parameters,
+      },
     })),
     tool_choice: "auto",
     temperature: 0.7,
@@ -46,7 +56,11 @@ async function processChat(phone: string, message: string) {
   const toolCalls = choice.message?.tool_calls || [];
   let finalResponse = choice.message?.content || "";
 
-  for (const toolCall of toolCalls as Array<{ id: string; type: "function"; function: { name: string; arguments: string } }>) {
+  for (const toolCall of toolCalls as Array<{
+    id: string;
+    type: "function";
+    function: { name: string; arguments: string };
+  }>) {
     const args = JSON.parse(toolCall.function.arguments);
     finalResponse = await callTool(toolCall.function.name, args);
   }
@@ -59,7 +73,12 @@ async function processChat(phone: string, message: string) {
   return finalResponse;
 }
 
-async function sendWhatsAppMessage(instanceName: string, instanceToken: string, remoteJid: string, text: string) {
+async function sendWhatsAppMessage(
+  instanceName: string,
+  instanceToken: string,
+  remoteJid: string,
+  text: string,
+) {
   const evolutionUrl = process.env.EVOLUTION_API_URL;
   const evolutionToken = process.env.EVOLUTION_API_TOKEN;
 
@@ -69,17 +88,20 @@ async function sendWhatsAppMessage(instanceName: string, instanceToken: string, 
   }
 
   try {
-    const response = await fetch(`${evolutionUrl}/message/sendText/${instanceName}`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "apikey": evolutionToken,
+    const response = await fetch(
+      `${evolutionUrl}/message/sendText/${instanceName}`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          apikey: evolutionToken,
+        },
+        body: JSON.stringify({
+          number: remoteJid.replace("@s.whatsapp.net", ""),
+          text,
+        }),
       },
-      body: JSON.stringify({
-        number: remoteJid.replace("@s.whatsapp.net", ""),
-        text,
-      }),
-    });
+    );
 
     return response.ok;
   } catch (error) {
@@ -91,7 +113,10 @@ async function sendWhatsAppMessage(instanceName: string, instanceToken: string, 
 export async function POST(request: Request) {
   try {
     if (!process.env.OPENAI_API_KEY) {
-      return NextResponse.json({ error: "OpenAI not configured" }, { status: 500 });
+      return NextResponse.json(
+        { error: "OpenAI not configured" },
+        { status: 500 },
+      );
     }
 
     const body: EvolutionWebhookPayload = await request.json();

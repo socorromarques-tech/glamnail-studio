@@ -16,9 +16,7 @@ export default async function BookingPage() {
     price: Number(s.price),
   }));
 
-  const serializedConfig = config
-    ? { ...config, }
-    : null;
+  const serializedConfig = config ? { ...config } : null;
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-primary-50 via-white to-gold-50/50 dark:from-gray-950 dark:via-gray-900 dark:to-gray-950">
