@@ -18,7 +18,7 @@ export async function GET(request: Request) {
     if (!result.success) {
       return NextResponse.json(
         { error: "Parâmetros inválidos", details: result.error.flatten() },
-        { status: 400 }
+        { status: 400 },
       );
     }
 
@@ -28,7 +28,7 @@ export async function GET(request: Request) {
     if (!config) {
       return NextResponse.json(
         { error: "Configuração do negócio não encontrada" },
-        { status: 404 }
+        { status: 404 },
       );
     }
 
@@ -65,7 +65,12 @@ export async function GET(request: Request) {
 
     while (currentMinutes + duration <= endMinutes) {
       const slotStart = new Date(date);
-      slotStart.setHours(Math.floor(currentMinutes / 60), currentMinutes % 60, 0, 0);
+      slotStart.setHours(
+        Math.floor(currentMinutes / 60),
+        currentMinutes % 60,
+        0,
+        0,
+      );
       const slotEnd = new Date(slotStart);
       slotEnd.setMinutes(slotEnd.getMinutes() + duration);
 
@@ -76,7 +81,12 @@ export async function GET(request: Request) {
       });
 
       slots.push({
-        time: `${Math.floor(currentMinutes / 60).toString().padStart(2, "0")}:${(currentMinutes % 60).toString().padStart(2, "0")}`,
+        time: `${Math.floor(currentMinutes / 60)
+          .toString()
+          .padStart(
+            2,
+            "0",
+          )}:${(currentMinutes % 60).toString().padStart(2, "0")}`,
         available: isAvailable,
       });
 
@@ -88,7 +98,7 @@ export async function GET(request: Request) {
     console.error("Error fetching availability:", error);
     return NextResponse.json(
       { error: "Erro ao buscar disponibilidade" },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }

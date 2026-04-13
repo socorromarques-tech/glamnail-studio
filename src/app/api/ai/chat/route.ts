@@ -10,7 +10,7 @@ const chatSchema = z.object({
       z.object({
         role: z.enum(["user", "assistant"]),
         content: z.string(),
-      })
+      }),
     )
     .optional()
     .default([]),
@@ -30,7 +30,7 @@ export async function POST(request: Request) {
     if (!process.env.OPENAI_API_KEY) {
       return NextResponse.json(
         { error: "OpenAI API key não configurada" },
-        { status: 500 }
+        { status: 500 },
       );
     }
 
@@ -38,15 +38,15 @@ export async function POST(request: Request) {
     const result = chatSchema.safeParse(body);
 
     if (!result.success) {
-      return NextResponse.json(
-        { error: "Mensagem inválida" },
-        { status: 400 }
-      );
+      return NextResponse.json({ error: "Mensagem inválida" }, { status: 400 });
     }
 
     const { message, conversationHistory } = result.data;
 
-    const messages: Array<{ role: "system" | "user" | "assistant"; content: string }> = [
+    const messages: Array<{
+      role: "system" | "user" | "assistant";
+      content: string;
+    }> = [
       { role: "system", content: getSystemPrompt() },
       ...conversationHistory.map((m) => ({
         role: m.role as "user" | "assistant",
@@ -92,7 +92,7 @@ export async function POST(request: Request) {
     console.error("Chat error:", error);
     return NextResponse.json(
       { error: "Erro ao processar mensagem" },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }

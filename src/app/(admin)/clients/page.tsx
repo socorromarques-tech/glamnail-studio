@@ -15,7 +15,8 @@ export default async function ClientsPage() {
         <div>
           <h1 className="text-3xl font-heading font-bold">Clientes</h1>
           <p className="text-gray-500 dark:text-gray-400 mt-1">
-            {clients.length} cliente{clients.length !== 1 ? "s" : ""} registado{clients.length !== 1 ? "s" : ""}
+            {clients.length} cliente{clients.length !== 1 ? "s" : ""} registado
+            {clients.length !== 1 ? "s" : ""}
           </p>
         </div>
       </div>

@@ -1,7 +1,7 @@
 import { type ClassValue, clsx } from "clsx";
 
 export function cn(...inputs: ClassValue[]) {
-  return inputs.filter(Boolean).join(" ");
+  return clsx(inputs);
 }
 
 export function formatCurrency(value: number | string): string {
@@ -36,7 +36,7 @@ export function formatDateTime(date: Date | string): string {
 export function generateTimeSlots(
   openTime: string,
   closeTime: string,
-  intervalMinutes: number
+  intervalMinutes: number,
 ): string[] {
   const slots: string[] = [];
   const [openH, openM] = openTime.split(":").map(Number);
@@ -49,7 +49,7 @@ export function generateTimeSlots(
     const hours = Math.floor(currentMinutes / 60);
     const minutes = currentMinutes % 60;
     slots.push(
-      `${hours.toString().padStart(2, "0")}:${minutes.toString().padStart(2, "0")}`
+      `${hours.toString().padStart(2, "0")}:${minutes.toString().padStart(2, "0")}`,
     );
     currentMinutes += intervalMinutes;
   }
@@ -58,9 +58,12 @@ export function generateTimeSlots(
 
 export function getStatusColor(status: string): string {
   const colors: Record<string, string> = {
-    PENDING: "bg-amber-100 text-amber-800 dark:bg-amber-900/30 dark:text-amber-400",
-    CONFIRMED: "bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-400",
-    COMPLETED: "bg-emerald-100 text-emerald-800 dark:bg-emerald-900/30 dark:text-emerald-400",
+    PENDING:
+      "bg-amber-100 text-amber-800 dark:bg-amber-900/30 dark:text-amber-400",
+    CONFIRMED:
+      "bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-400",
+    COMPLETED:
+      "bg-emerald-100 text-emerald-800 dark:bg-emerald-900/30 dark:text-emerald-400",
     CANCELLED: "bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-400",
     NO_SHOW: "bg-gray-100 text-gray-800 dark:bg-gray-900/30 dark:text-gray-400",
   };

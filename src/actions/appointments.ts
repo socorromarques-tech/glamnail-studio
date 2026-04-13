@@ -3,7 +3,7 @@
 import { prisma } from "@/lib/prisma";
 import { serialize } from "@/lib/serialize";
 import { revalidatePath } from "next/cache";
-import { triggerN8nWebhook } from "@/lib/n8n";
+import { notifyAppointmentEvent } from "@/lib/notifications";
 import { AppointmentStatus } from "@prisma/client";
 
 export async function getAppointments(filters?: {
@@ -77,10 +77,7 @@ export async function createAppointment(data: {
   });
 
   const totalDuration = services.reduce((sum, s) => sum + s.duration, 0);
-  const totalPrice = services.reduce(
-    (sum, s) => sum + Number(s.price),
-    0
-  );
+  const totalPrice = services.reduce((sum, s) => sum + Number(s.price), 0);
 
   const endTime = new Date(data.date);
   endTime.setMinutes(endTime.getMinutes() + totalDuration);
@@ -105,8 +102,12 @@ export async function createAppointment(data: {
     },
   });
 
-  // Trigger n8n webhook
-  await triggerN8nWebhook("appointment.created", appointment, "GlamNail Studio");
+  // Trigger notification
+  await notifyAppointmentEvent(
+    "appointment.created",
+    appointment,
+    "GlamNail Studio",
+  );
 
   revalidatePath("/appointments");
   revalidatePath("/dashboard");
@@ -115,7 +116,7 @@ export async function createAppointment(data: {
 
 export async function updateAppointmentStatus(
   id: string,
-  status: AppointmentStatus
+  status: AppointmentStatus,
 ) {
   const appointment = await prisma.appointment.update({
     where: { id },
@@ -127,9 +128,17 @@ export async function updateAppointmentStatus(
   });
 
   if (status === "CONFIRMED") {
-    await triggerN8nWebhook("appointment.confirmed", appointment, "GlamNail Studio");
+    await notifyAppointmentEvent(
+      "appointment.confirmed",
+      appointment,
+      "GlamNail Studio",
+    );
   } else if (status === "CANCELLED") {
-    await triggerN8nWebhook("appointment.cancelled", appointment, "GlamNail Studio");
+    await notifyAppointmentEvent(
+      "appointment.cancelled",
+      appointment,
+      "GlamNail Studio",
+    );
   }
 
   revalidatePath("/appointments");
@@ -150,17 +159,14 @@ export async function updateAppointment(
     serviceIds: string[];
     date: Date;
     notes?: string;
-  }
+  },
 ) {
   const services = await prisma.service.findMany({
     where: { id: { in: data.serviceIds } },
   });
 
   const totalDuration = services.reduce((sum, s) => sum + s.duration, 0);
-  const totalPrice = services.reduce(
-    (sum, s) => sum + Number(s.price),
-    0
-  );
+  const totalPrice = services.reduce((sum, s) => sum + Number(s.price), 0);
 
   const endTime = new Date(data.date);
   endTime.setMinutes(endTime.getMinutes() + totalDuration);
@@ -190,6 +196,14 @@ export async function updateAppointment(
 
   revalidatePath("/appointments");
   revalidatePath("/dashboard");
+
+  // Notify client of appointment reschedule
+  await notifyAppointmentEvent(
+    "appointment.created",
+    appointment,
+    "GlamNail Studio",
+  );
+
   return serialize(appointment);
 }
 
@@ -230,7 +244,12 @@ export async function getAvailableSlots(date: string, serviceIds: string[]) {
 
   while (currentMinutes + totalDuration <= endMinutes) {
     const slotStart = new Date(date);
-    slotStart.setHours(Math.floor(currentMinutes / 60), currentMinutes % 60, 0, 0);
+    slotStart.setHours(
+      Math.floor(currentMinutes / 60),
+      currentMinutes % 60,
+      0,
+      0,
+    );
     const slotEnd = new Date(slotStart);
     slotEnd.setMinutes(slotEnd.getMinutes() + totalDuration);
 
@@ -241,7 +260,12 @@ export async function getAvailableSlots(date: string, serviceIds: string[]) {
     });
 
     slots.push({
-      time: `${Math.floor(currentMinutes / 60).toString().padStart(2, "0")}:${(currentMinutes % 60).toString().padStart(2, "0")}`,
+      time: `${Math.floor(currentMinutes / 60)
+        .toString()
+        .padStart(
+          2,
+          "0",
+        )}:${(currentMinutes % 60).toString().padStart(2, "0")}`,
       available: isAvailable,
     });
 

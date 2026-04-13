@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { z } from "zod";
-import { triggerN8nWebhook } from "@/lib/n8n";
+import { notifyAppointmentEvent } from "@/lib/notifications";
 
 const appointmentSchema = z.object({
   clientId: z.string(),
@@ -19,7 +19,7 @@ export async function POST(request: Request) {
     if (!result.success) {
       return NextResponse.json(
         { error: "Dados inválidos", details: result.error.flatten() },
-        { status: 400 }
+        { status: 400 },
       );
     }
 
@@ -29,7 +29,7 @@ export async function POST(request: Request) {
     if (!client) {
       return NextResponse.json(
         { error: "Cliente não encontrado" },
-        { status: 404 }
+        { status: 404 },
       );
     }
 
@@ -40,7 +40,7 @@ export async function POST(request: Request) {
     if (services.length !== serviceIds.length) {
       return NextResponse.json(
         { error: "Alguns serviços não foram encontrados" },
-        { status: 400 }
+        { status: 400 },
       );
     }
 
@@ -60,16 +60,14 @@ export async function POST(request: Request) {
       where: {
         date: { gte: startOfDay, lte: endOfDay },
         status: { notIn: ["CANCELLED"] },
-        OR: [
-          { date: { lt: endTime }, endTime: { gt: dateTime } },
-        ],
+        OR: [{ date: { lt: endTime }, endTime: { gt: dateTime } }],
       },
     });
 
     if (conflicting) {
       return NextResponse.json(
         { error: "Horário não disponível. Por favor, escolha outro horário." },
-        { status: 409 }
+        { status: 409 },
       );
     }
 
@@ -94,10 +92,10 @@ export async function POST(request: Request) {
     });
 
     const config = await prisma.businessConfig.findFirst();
-    await triggerN8nWebhook(
+    await notifyAppointmentEvent(
       "appointment.created",
       appointment,
-      config?.businessName || "GlamNail Studio"
+      config?.businessName || "GlamNail Studio",
     );
 
     return NextResponse.json({
@@ -122,7 +120,7 @@ export async function POST(request: Request) {
     console.error("Error creating appointment:", error);
     return NextResponse.json(
       { error: "Erro ao criar agendamento" },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }

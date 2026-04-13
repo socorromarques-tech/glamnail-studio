@@ -3,7 +3,17 @@
 import { useState } from "react";
 import { createClient, updateClient, deleteClient } from "@/actions/clients";
 import { formatDate } from "@/lib/utils";
-import { Search, Plus, Edit2, Trash2, Phone, Mail, X, User, Users } from "lucide-react";
+import {
+  Search,
+  Plus,
+  Edit2,
+  Trash2,
+  Phone,
+  Mail,
+  X,
+  User,
+  Users,
+} from "lucide-react";
 
 interface Client {
   id: string;
@@ -15,18 +25,27 @@ interface Client {
   appointments: unknown[];
 }
 
-export function ClientsList({ clients: initialClients }: { clients: Client[] }) {
+export function ClientsList({
+  clients: initialClients,
+}: {
+  clients: Client[];
+}) {
   const [search, setSearch] = useState("");
   const [showModal, setShowModal] = useState(false);
   const [editingClient, setEditingClient] = useState<Client | null>(null);
-  const [form, setForm] = useState({ name: "", phone: "", email: "", notes: "" });
+  const [form, setForm] = useState({
+    name: "",
+    phone: "",
+    email: "",
+    notes: "",
+  });
   const [loading, setLoading] = useState(false);
 
   const filteredClients = initialClients.filter(
     (c) =>
       c.name.toLowerCase().includes(search.toLowerCase()) ||
       c.phone.includes(search) ||
-      c.email?.toLowerCase().includes(search.toLowerCase())
+      c.email?.toLowerCase().includes(search.toLowerCase()),
   );
 
   const openCreate = () => {
@@ -83,7 +102,10 @@ export function ClientsList({ clients: initialClients }: { clients: Client[] }) 
             className="input pl-10"
           />
         </div>
-        <button onClick={openCreate} className="btn-primary flex items-center gap-2">
+        <button
+          onClick={openCreate}
+          className="btn-primary flex items-center gap-2"
+        >
           <Plus className="w-4 h-4" />
           Novo Cliente
         </button>
@@ -101,7 +123,8 @@ export function ClientsList({ clients: initialClients }: { clients: Client[] }) 
                 <div>
                   <h3 className="font-semibold">{client.name}</h3>
                   <p className="text-xs text-gray-400">
-                    {client.appointments.length} agendamento{client.appointments.length !== 1 ? "s" : ""}
+                    {client.appointments.length} agendamento
+                    {client.appointments.length !== 1 ? "s" : ""}
                   </p>
                 </div>
               </div>
@@ -175,7 +198,9 @@ export function ClientsList({ clients: initialClients }: { clients: Client[] }) 
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium mb-1">Telefone *</label>
+                <label className="block text-sm font-medium mb-1">
+                  Telefone *
+                </label>
                 <input
                   type="tel"
                   value={form.phone}
@@ -203,11 +228,23 @@ export function ClientsList({ clients: initialClients }: { clients: Client[] }) 
                 />
               </div>
               <div className="flex gap-3 pt-2">
-                <button type="button" onClick={() => setShowModal(false)} className="btn-secondary flex-1">
+                <button
+                  type="button"
+                  onClick={() => setShowModal(false)}
+                  className="btn-secondary flex-1"
+                >
                   Cancelar
                 </button>
-                <button type="submit" disabled={loading} className="btn-primary flex-1">
-                  {loading ? "A guardar..." : editingClient ? "Guardar" : "Criar"}
+                <button
+                  type="submit"
+                  disabled={loading}
+                  className="btn-primary flex-1"
+                >
+                  {loading
+                    ? "A guardar..."
+                    : editingClient
+                      ? "Guardar"
+                      : "Criar"}
                 </button>
               </div>
             </form>

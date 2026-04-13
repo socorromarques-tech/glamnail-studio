@@ -26,7 +26,7 @@ export async function GET() {
     console.error("Error fetching services:", error);
     return NextResponse.json(
       { error: "Erro ao buscar serviços" },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }

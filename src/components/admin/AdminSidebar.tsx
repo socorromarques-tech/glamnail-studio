@@ -43,7 +43,7 @@ export function AdminSidebar({ user }: AdminSidebarProps) {
       {/* Mobile toggle */}
       <button
         onClick={() => setMobileOpen(true)}
-        className="lg:hidden fixed top-4 left-4 z-50 p-2 rounded-xl bg-white dark:bg-gray-800 shadow-lg border border-gray-200 dark:border-gray-700"
+        className="lg:hidden fixed top-4 left-4 z-50 p-2 rounded-xl bg-white dark:bg-gray-800 shadow-sm border border-gray-200 dark:border-gray-700"
       >
         <Menu className="w-5 h-5" />
       </button>
@@ -65,12 +65,16 @@ export function AdminSidebar({ user }: AdminSidebarProps) {
         {/* Brand */}
         <div className="flex items-center justify-between p-6 border-b border-gray-100 dark:border-gray-800">
           <Link href="/dashboard" className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-xl gradient-bg flex items-center justify-center shadow-lg shadow-primary-500/25">
-              <Sparkles className="w-5 h-5 text-white" />
+            <div className="w-10 h-10 rounded-xl bg-gray-100 dark:bg-gray-800 flex items-center justify-center">
+              <Sparkles className="w-5 h-5 text-gray-600 dark:text-gray-300" />
             </div>
             <div>
-              <h1 className="font-heading font-bold text-lg gradient-text">GlamNail</h1>
-              <p className="text-[10px] text-gray-400 uppercase tracking-wider">Studio</p>
+              <h1 className="font-heading font-bold text-lg text-gray-900 dark:text-gray-100">
+                GlamNail
+              </h1>
+              <p className="text-[10px] text-gray-400 uppercase tracking-wider">
+                Studio
+              </p>
             </div>
           </Link>
           <button
@@ -104,11 +108,13 @@ export function AdminSidebar({ user }: AdminSidebarProps) {
         {/* User */}
         <div className="p-4 border-t border-gray-100 dark:border-gray-800">
           <div className="flex items-center gap-3 mb-3 px-2">
-            <div className="w-8 h-8 rounded-full gradient-bg flex items-center justify-center text-white text-sm font-bold">
+            <div className="w-8 h-8 rounded-full bg-gray-200 dark:bg-gray-700 flex items-center justify-center text-gray-700 dark:text-gray-100 text-sm font-bold">
               {user?.name?.[0] || "A"}
             </div>
             <div className="flex-1 min-w-0">
-              <p className="text-sm font-medium truncate">{user?.name || "Admin"}</p>
+              <p className="text-sm font-medium truncate">
+                {user?.name || "Admin"}
+              </p>
               <p className="text-xs text-gray-400 truncate">{user?.email}</p>
             </div>
           </div>

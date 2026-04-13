@@ -8,10 +8,25 @@ import {
   deleteAppointment,
   getAppointments,
 } from "@/actions/appointments";
-import { formatTime, formatCurrency, getStatusColor, getStatusLabel, formatDate } from "@/lib/utils";
 import {
-  Plus, Calendar, ChevronLeft, ChevronRight, Clock,
-  User, X, Check, XCircle, Trash2, Pencil,
+  formatTime,
+  formatCurrency,
+  getStatusColor,
+  getStatusLabel,
+  formatDate,
+} from "@/lib/utils";
+import {
+  Plus,
+  Calendar,
+  ChevronLeft,
+  ChevronRight,
+  Clock,
+  User,
+  X,
+  Check,
+  XCircle,
+  Trash2,
+  Pencil,
 } from "lucide-react";
 import { AppointmentStatus } from "@prisma/client";
 
@@ -50,12 +65,13 @@ export function AppointmentsList({
   services: Service[];
 }) {
   const [selectedDate, setSelectedDate] = useState(
-    new Date().toISOString().split("T")[0]
+    new Date().toISOString().split("T")[0],
   );
   const [appointments, setAppointments] = useState(initialAppointments);
   const [showModal, setShowModal] = useState(false);
   const [editModal, setEditModal] = useState(false);
-  const [editingAppointment, setEditingAppointment] = useState<AppointmentWithRelations | null>(null);
+  const [editingAppointment, setEditingAppointment] =
+    useState<AppointmentWithRelations | null>(null);
   const [form, setForm] = useState({
     clientId: "",
     serviceIds: [] as string[],
@@ -70,7 +86,9 @@ export function AppointmentsList({
     d.setDate(d.getDate() + days);
     const newDate = d.toISOString().split("T")[0];
     setSelectedDate(newDate);
-    const data = await getAppointments({ date: newDate }) as unknown as AppointmentWithRelations[];
+    const data = (await getAppointments({
+      date: newDate,
+    })) as unknown as AppointmentWithRelations[];
     setAppointments(data);
   };
 
@@ -95,7 +113,9 @@ export function AppointmentsList({
         notes: form.notes || undefined,
       });
       setShowModal(false);
-      const data = await getAppointments({ date: selectedDate }) as unknown as AppointmentWithRelations[];
+      const data = (await getAppointments({
+        date: selectedDate,
+      })) as unknown as AppointmentWithRelations[];
       setAppointments(data);
     } catch (error) {
       console.error(error);
@@ -106,14 +126,18 @@ export function AppointmentsList({
 
   const handleStatus = async (id: string, status: AppointmentStatus) => {
     await updateAppointmentStatus(id, status);
-    const data = await getAppointments({ date: selectedDate }) as unknown as AppointmentWithRelations[];
+    const data = (await getAppointments({
+      date: selectedDate,
+    })) as unknown as AppointmentWithRelations[];
     setAppointments(data);
   };
 
   const handleDelete = async (id: string) => {
     if (confirm("Eliminar este agendamento?")) {
       await deleteAppointment(id);
-      const data = await getAppointments({ date: selectedDate }) as unknown as AppointmentWithRelations[];
+      const data = (await getAppointments({
+        date: selectedDate,
+      })) as unknown as AppointmentWithRelations[];
       setAppointments(data);
     }
   };
@@ -143,7 +167,9 @@ export function AppointmentsList({
               value={selectedDate}
               onChange={async (e) => {
                 setSelectedDate(e.target.value);
-                const data = await getAppointments({ date: e.target.value }) as unknown as AppointmentWithRelations[];
+                const data = (await getAppointments({
+                  date: e.target.value,
+                })) as unknown as AppointmentWithRelations[];
                 setAppointments(data);
               }}
               className="input w-auto"
@@ -155,7 +181,13 @@ export function AppointmentsList({
         </div>
         <button
           onClick={() => {
-            setForm({ clientId: "", serviceIds: [], date: selectedDate, time: "09:00", notes: "" });
+            setForm({
+              clientId: "",
+              serviceIds: [],
+              date: selectedDate,
+              time: "09:00",
+              notes: "",
+            });
             setShowModal(true);
           }}
           className="btn-primary flex items-center gap-2"
@@ -170,16 +202,20 @@ export function AppointmentsList({
         {appointments.length === 0 ? (
           <div className="text-center py-16">
             <Calendar className="w-12 h-12 text-gray-300 dark:text-gray-600 mx-auto mb-3" />
-            <p className="text-gray-500">Sem agendamentos para {formatDate(selectedDate)}</p>
+            <p className="text-gray-500">
+              Sem agendamentos para {formatDate(selectedDate)}
+            </p>
           </div>
         ) : (
           appointments.map((apt) => (
-            <div key={apt.id} className="card p-5">
+            <div key={apt.id} className="card-admin">
               <div className="flex items-start justify-between">
                 <div className="flex items-center gap-4">
                   <div className="text-center">
                     <p className="text-lg font-bold">{formatTime(apt.date)}</p>
-                    <p className="text-xs text-gray-400">{formatTime(apt.endTime)}</p>
+                    <p className="text-xs text-gray-400">
+                      {formatTime(apt.endTime)}
+                    </p>
                   </div>
                   <div className="w-px h-12 bg-gray-200 dark:bg-gray-700" />
                   <div>
@@ -241,7 +277,8 @@ export function AppointmentsList({
                         <Check className="w-4 h-4" />
                       </button>
                     )}
-                    {(apt.status === "PENDING" || apt.status === "CONFIRMED") && (
+                    {(apt.status === "PENDING" ||
+                      apt.status === "CONFIRMED") && (
                       <>
                         <button
                           onClick={() => handleStatus(apt.id, "COMPLETED")}
@@ -279,28 +316,41 @@ export function AppointmentsList({
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
           <div className="card p-6 w-full max-w-lg animate-fade-in max-h-[90vh] overflow-y-auto">
             <div className="flex items-center justify-between mb-4">
-              <h2 className="text-lg font-heading font-semibold">Novo Agendamento</h2>
-              <button onClick={() => setShowModal(false)} className="p-1 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800">
+              <h2 className="text-lg font-heading font-semibold">
+                Novo Agendamento
+              </h2>
+              <button
+                onClick={() => setShowModal(false)}
+                className="p-1 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800"
+              >
                 <X className="w-5 h-5" />
               </button>
             </div>
             <form onSubmit={handleSubmit} className="space-y-4">
               <div>
-                <label className="block text-sm font-medium mb-1">Cliente *</label>
+                <label className="block text-sm font-medium mb-1">
+                  Cliente *
+                </label>
                 <select
                   value={form.clientId}
-                  onChange={(e) => setForm({ ...form, clientId: e.target.value })}
+                  onChange={(e) =>
+                    setForm({ ...form, clientId: e.target.value })
+                  }
                   className="input"
                   required
                 >
                   <option value="">Selecionar cliente...</option>
                   {clients.map((c) => (
-                    <option key={c.id} value={c.id}>{c.name} - {c.phone}</option>
+                    <option key={c.id} value={c.id}>
+                      {c.name} - {c.phone}
+                    </option>
                   ))}
                 </select>
               </div>
               <div>
-                <label className="block text-sm font-medium mb-2">Serviços *</label>
+                <label className="block text-sm font-medium mb-2">
+                  Serviços *
+                </label>
                 <div className="grid grid-cols-2 gap-2">
                   {services.map((s) => (
                     <button
@@ -314,7 +364,10 @@ export function AppointmentsList({
                       }`}
                     >
                       <div className="flex items-center gap-2">
-                        <div className="w-3 h-3 rounded-full" style={{ backgroundColor: s.color }} />
+                        <div
+                          className="w-3 h-3 rounded-full"
+                          style={{ backgroundColor: s.color }}
+                        />
                         <span className="font-medium">{s.name}</span>
                       </div>
                       <p className="text-xs text-gray-400 mt-1">
@@ -325,27 +378,59 @@ export function AppointmentsList({
                 </div>
                 {form.serviceIds.length > 0 && (
                   <div className="mt-2 p-2 rounded-lg bg-primary-50 dark:bg-primary-900/10 text-sm">
-                    Total: <strong>{formatCurrency(selectedTotal)}</strong> · {selectedDuration} min
+                    Total: <strong>{formatCurrency(selectedTotal)}</strong> ·{" "}
+                    {selectedDuration} min
                   </div>
                 )}
               </div>
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="block text-sm font-medium mb-1">Data *</label>
-                  <input type="date" value={form.date} onChange={(e) => setForm({ ...form, date: e.target.value })} className="input" required />
+                  <label className="block text-sm font-medium mb-1">
+                    Data *
+                  </label>
+                  <input
+                    type="date"
+                    value={form.date}
+                    onChange={(e) => setForm({ ...form, date: e.target.value })}
+                    className="input"
+                    required
+                  />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium mb-1">Hora *</label>
-                  <input type="time" value={form.time} onChange={(e) => setForm({ ...form, time: e.target.value })} className="input" required />
+                  <label className="block text-sm font-medium mb-1">
+                    Hora *
+                  </label>
+                  <input
+                    type="time"
+                    value={form.time}
+                    onChange={(e) => setForm({ ...form, time: e.target.value })}
+                    className="input"
+                    required
+                  />
                 </div>
               </div>
               <div>
                 <label className="block text-sm font-medium mb-1">Notas</label>
-                <textarea value={form.notes} onChange={(e) => setForm({ ...form, notes: e.target.value })} className="input" rows={2} />
+                <textarea
+                  value={form.notes}
+                  onChange={(e) => setForm({ ...form, notes: e.target.value })}
+                  className="input"
+                  rows={2}
+                />
               </div>
               <div className="flex gap-3 pt-2">
-                <button type="button" onClick={() => setShowModal(false)} className="btn-secondary flex-1">Cancelar</button>
-                <button type="submit" disabled={loading || form.serviceIds.length === 0} className="btn-primary flex-1">
+                <button
+                  type="button"
+                  onClick={() => setShowModal(false)}
+                  className="btn-secondary flex-1"
+                >
+                  Cancelar
+                </button>
+                <button
+                  type="submit"
+                  disabled={loading || form.serviceIds.length === 0}
+                  className="btn-primary flex-1"
+                >
                   {loading ? "A criar..." : "Criar Agendamento"}
                 </button>
               </div>
@@ -359,47 +444,65 @@ export function AppointmentsList({
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
           <div className="card p-6 w-full max-w-lg animate-fade-in max-h-[90vh] overflow-y-auto">
             <div className="flex items-center justify-between mb-4">
-              <h2 className="text-lg font-heading font-semibold">Editar Agendamento</h2>
-              <button onClick={() => setEditModal(false)} className="p-1 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800">
+              <h2 className="text-lg font-heading font-semibold">
+                Editar Agendamento
+              </h2>
+              <button
+                onClick={() => setEditModal(false)}
+                className="p-1 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800"
+              >
                 <X className="w-5 h-5" />
               </button>
             </div>
-            <form onSubmit={async (e) => {
-              e.preventDefault();
-              setLoading(true);
-              try {
-                const dateTime = new Date(`${form.date}T${form.time}:00`);
-                await updateAppointment(editingAppointment.id, {
-                  clientId: form.clientId,
-                  serviceIds: form.serviceIds,
-                  date: dateTime,
-                  notes: form.notes || undefined,
-                });
-                setEditModal(false);
-                const data = await getAppointments({ date: selectedDate }) as unknown as AppointmentWithRelations[];
-                setAppointments(data);
-              } catch (error) {
-                console.error(error);
-              } finally {
-                setLoading(false);
-              }
-            }} className="space-y-4">
+            <form
+              onSubmit={async (e) => {
+                e.preventDefault();
+                setLoading(true);
+                try {
+                  const dateTime = new Date(`${form.date}T${form.time}:00`);
+                  await updateAppointment(editingAppointment.id, {
+                    clientId: form.clientId,
+                    serviceIds: form.serviceIds,
+                    date: dateTime,
+                    notes: form.notes || undefined,
+                  });
+                  setEditModal(false);
+                  const data = (await getAppointments({
+                    date: selectedDate,
+                  })) as unknown as AppointmentWithRelations[];
+                  setAppointments(data);
+                } catch (error) {
+                  console.error(error);
+                } finally {
+                  setLoading(false);
+                }
+              }}
+              className="space-y-4"
+            >
               <div>
-                <label className="block text-sm font-medium mb-1">Cliente *</label>
+                <label className="block text-sm font-medium mb-1">
+                  Cliente *
+                </label>
                 <select
                   value={form.clientId}
-                  onChange={(e) => setForm({ ...form, clientId: e.target.value })}
+                  onChange={(e) =>
+                    setForm({ ...form, clientId: e.target.value })
+                  }
                   className="input"
                   required
                 >
                   <option value="">Selecionar cliente...</option>
                   {clients.map((c) => (
-                    <option key={c.id} value={c.id}>{c.name} - {c.phone}</option>
+                    <option key={c.id} value={c.id}>
+                      {c.name} - {c.phone}
+                    </option>
                   ))}
                 </select>
               </div>
               <div>
-                <label className="block text-sm font-medium mb-2">Serviços *</label>
+                <label className="block text-sm font-medium mb-2">
+                  Serviços *
+                </label>
                 <div className="grid grid-cols-2 gap-2">
                   {services.map((s) => (
                     <button
@@ -413,7 +516,10 @@ export function AppointmentsList({
                       }`}
                     >
                       <div className="flex items-center gap-2">
-                        <div className="w-3 h-3 rounded-full" style={{ backgroundColor: s.color }} />
+                        <div
+                          className="w-3 h-3 rounded-full"
+                          style={{ backgroundColor: s.color }}
+                        />
                         <span className="font-medium">{s.name}</span>
                       </div>
                       <p className="text-xs text-gray-400 mt-1">
@@ -424,27 +530,59 @@ export function AppointmentsList({
                 </div>
                 {form.serviceIds.length > 0 && (
                   <div className="mt-2 p-2 rounded-lg bg-primary-50 dark:bg-primary-900/10 text-sm">
-                    Total: <strong>{formatCurrency(selectedTotal)}</strong> · {selectedDuration} min
+                    Total: <strong>{formatCurrency(selectedTotal)}</strong> ·{" "}
+                    {selectedDuration} min
                   </div>
                 )}
               </div>
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="block text-sm font-medium mb-1">Data *</label>
-                  <input type="date" value={form.date} onChange={(e) => setForm({ ...form, date: e.target.value })} className="input" required />
+                  <label className="block text-sm font-medium mb-1">
+                    Data *
+                  </label>
+                  <input
+                    type="date"
+                    value={form.date}
+                    onChange={(e) => setForm({ ...form, date: e.target.value })}
+                    className="input"
+                    required
+                  />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium mb-1">Hora *</label>
-                  <input type="time" value={form.time} onChange={(e) => setForm({ ...form, time: e.target.value })} className="input" required />
+                  <label className="block text-sm font-medium mb-1">
+                    Hora *
+                  </label>
+                  <input
+                    type="time"
+                    value={form.time}
+                    onChange={(e) => setForm({ ...form, time: e.target.value })}
+                    className="input"
+                    required
+                  />
                 </div>
               </div>
               <div>
                 <label className="block text-sm font-medium mb-1">Notas</label>
-                <textarea value={form.notes} onChange={(e) => setForm({ ...form, notes: e.target.value })} className="input" rows={2} />
+                <textarea
+                  value={form.notes}
+                  onChange={(e) => setForm({ ...form, notes: e.target.value })}
+                  className="input"
+                  rows={2}
+                />
               </div>
               <div className="flex gap-3 pt-2">
-                <button type="button" onClick={() => setEditModal(false)} className="btn-secondary flex-1">Cancelar</button>
-                <button type="submit" disabled={loading || form.serviceIds.length === 0} className="btn-primary flex-1">
+                <button
+                  type="button"
+                  onClick={() => setEditModal(false)}
+                  className="btn-secondary flex-1"
+                >
+                  Cancelar
+                </button>
+                <button
+                  type="submit"
+                  disabled={loading || form.serviceIds.length === 0}
+                  className="btn-primary flex-1"
+                >
                   {loading ? "A guardar..." : "Guardar Alterações"}
                 </button>
               </div>
