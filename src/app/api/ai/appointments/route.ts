@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { z } from "zod";
-import { triggerN8nWebhook } from "@/lib/n8n";
+import { notifyAppointmentEvent } from "@/lib/notifications";
 
 const appointmentSchema = z.object({
   clientId: z.string(),
@@ -92,7 +92,7 @@ export async function POST(request: Request) {
     });
 
     const config = await prisma.businessConfig.findFirst();
-    await triggerN8nWebhook(
+    await notifyAppointmentEvent(
       "appointment.created",
       appointment,
       config?.businessName || "GlamNail Studio",

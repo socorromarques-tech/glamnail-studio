@@ -50,6 +50,7 @@ model Appointment {
   date       DateTime
   endTime    DateTime
   status     AppointmentStatus    @default(PENDING)
+  reminderSent Boolean @default(false)
   totalPrice Decimal              @db.Decimal(10, 2)
   notes      String?
   createdAt  DateTime             @default(now())
@@ -80,7 +81,6 @@ model BusinessConfig {
   closeTime     String  @default("18:00")
   slotInterval  Int     @default(30)
   workDays      String  @default("1,2,3,4,5")
-  n8nWebhookUrl String?
   logoUrl       String?
 }
 

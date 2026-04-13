@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { getBusinessConfig, updateBusinessConfig } from "@/actions/settings";
-import { Save, Store, Clock, Webhook } from "lucide-react";
+import { Save, Store, Clock } from "lucide-react";
 
 export default function SettingsPage() {
   const [form, setForm] = useState({
@@ -15,7 +15,6 @@ export default function SettingsPage() {
     closeTime: "18:00",
     slotInterval: 30,
     workDays: "1,2,3,4,5,6",
-    n8nWebhookUrl: "",
   });
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
@@ -34,7 +33,6 @@ export default function SettingsPage() {
           closeTime: config.closeTime,
           slotInterval: config.slotInterval,
           workDays: config.workDays,
-          n8nWebhookUrl: config.n8nWebhookUrl || "",
         });
       }
       setLoading(false);
@@ -173,31 +171,6 @@ export default function SettingsPage() {
                 className="input"
               />
             </div>
-          </div>
-        </div>
-
-        <div className="card p-6">
-          <div className="flex items-center gap-2 mb-4">
-            <Webhook className="w-5 h-5 text-primary-500" />
-            <h2 className="font-heading font-semibold">Integração n8n</h2>
-          </div>
-          <div>
-            <label className="block text-sm font-medium mb-1">
-              URL do Webhook n8n
-            </label>
-            <input
-              type="url"
-              value={form.n8nWebhookUrl}
-              onChange={(e) =>
-                setForm({ ...form, n8nWebhookUrl: e.target.value })
-              }
-              className="input"
-              placeholder="https://n8n.exemplo.com/webhook/..."
-            />
-            <p className="text-xs text-gray-400 mt-1">
-              Configure aqui a URL do webhook para automações (notificações
-              WhatsApp, lembretes, etc.)
-            </p>
           </div>
         </div>
 

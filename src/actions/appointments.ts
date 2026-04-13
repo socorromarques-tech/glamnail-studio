@@ -3,7 +3,7 @@
 import { prisma } from "@/lib/prisma";
 import { serialize } from "@/lib/serialize";
 import { revalidatePath } from "next/cache";
-import { triggerN8nWebhook } from "@/lib/n8n";
+import { notifyAppointmentEvent } from "@/lib/notifications";
 import { AppointmentStatus } from "@prisma/client";
 
 export async function getAppointments(filters?: {
@@ -102,8 +102,8 @@ export async function createAppointment(data: {
     },
   });
 
-  // Trigger n8n webhook
-  await triggerN8nWebhook(
+  // Trigger notification
+  await notifyAppointmentEvent(
     "appointment.created",
     appointment,
     "GlamNail Studio",
@@ -128,13 +128,13 @@ export async function updateAppointmentStatus(
   });
 
   if (status === "CONFIRMED") {
-    await triggerN8nWebhook(
+    await notifyAppointmentEvent(
       "appointment.confirmed",
       appointment,
       "GlamNail Studio",
     );
   } else if (status === "CANCELLED") {
-    await triggerN8nWebhook(
+    await notifyAppointmentEvent(
       "appointment.cancelled",
       appointment,
       "GlamNail Studio",
@@ -196,6 +196,14 @@ export async function updateAppointment(
 
   revalidatePath("/appointments");
   revalidatePath("/dashboard");
+
+  // Notify client of appointment reschedule
+  await notifyAppointmentEvent(
+    "appointment.created",
+    appointment,
+    "GlamNail Studio",
+  );
+
   return serialize(appointment);
 }
 

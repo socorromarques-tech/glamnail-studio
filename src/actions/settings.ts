@@ -17,7 +17,6 @@ export async function updateBusinessConfig(data: {
   closeTime?: string;
   slotInterval?: number;
   workDays?: string;
-  n8nWebhookUrl?: string;
 }) {
   const existing = await prisma.businessConfig.findFirst();
 

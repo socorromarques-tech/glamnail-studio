@@ -51,14 +51,3 @@ export interface BookingFormData {
   time: string;
   notes?: string;
 }
-
-// n8n webhook payload
-export interface N8nWebhookPayload {
-  event:
-    | "appointment.created"
-    | "appointment.confirmed"
-    | "appointment.cancelled"
-    | "appointment.reminder";
-  appointment: AppointmentWithRelations;
-  businessName: string;
-}

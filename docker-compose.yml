@@ -1,0 +1,117 @@
+services:
+  # ─── GlamNail App ───────────────────────────────────────────────
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: glamnail_app
+    ports:
+      - "3001:3000"
+    environment:
+      NODE_ENV: production
+      DATABASE_URL: postgresql://glamnail:${POSTGRES_PASSWORD:-glamnail123}@postgres:5432/glamnail
+      NEXTAUTH_SECRET: ${NEXTAUTH_SECRET:-change-me-in-production}
+      NEXTAUTH_URL: ${NEXTAUTH_URL:-http://localhost:3001}
+      OPENAI_API_KEY: ${OPENAI_API_KEY}
+      EVOLUTION_API_URL: http://evolution:8080
+      EVOLUTION_API_TOKEN: ${EVOLUTION_API_TOKEN:?EVOLUTION_API_TOKEN is required}
+      EVOLUTION_INSTANCE_NAME: ${EVOLUTION_INSTANCE_NAME:-glamnail}
+      CRON_SECRET: ${CRON_SECRET:?CRON_SECRET is required}
+    depends_on:
+      postgres:
+        condition: service_healthy
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "wget", "-q", "--spider", "http://localhost:3000"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  # ─── PostgreSQL (App DB) ───────────────────────────────────────
+  postgres:
+    image: postgres:16-alpine
+    container_name: glamnail_postgres
+    environment:
+      POSTGRES_USER: glamnail
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-glamnail123}
+      POSTGRES_DB: glamnail
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U glamnail"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  # ─── Redis (Evolution cache) ───────────────────────────────────
+  redis:
+    image: redis:7-alpine
+    container_name: glamnail_redis
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  # ─── Evolution API (WhatsApp) ──────────────────────────────────
+  evolution:
+    image: atendai/evolution-api:latest
+    container_name: glamnail_evolution
+    ports:
+      - "8080:8080"
+    environment:
+      SERVER_TYPE: http
+      SERVER_PORT: 8080
+      AUTHENTICATION_API_KEY: ${EVOLUTION_API_TOKEN:?EVOLUTION_API_TOKEN is required}
+      DATABASE_ENABLED: true
+      DATABASE_PROVIDER: postgresql
+      DATABASE_CONNECTION_URI: postgresql://evolution:${EVOLUTION_POSTGRES_PASSWORD:-evolution123}@evolution_postgres:5432/evolution?schema=public
+      DATABASE_CONNECTION_CLIENT_NAME: evolution_exchange
+      DATABASE_SAVE_DATA_INSTANCE: true
+      DATABASE_SAVE_DATA_NEW_MESSAGE: true
+      DATABASE_SAVE_MESSAGE_UPDATE: true
+      DATABASE_SAVE_DATA_CONTACTS: true
+      DATABASE_SAVE_DATA_CHATS: true
+      DATABASE_SAVE_DATA_LABELS: true
+      DATABASE_SAVE_DATA_HISTORIC: true
+      WEBHOOK_GLOBAL_ENABLED: false
+      CACHE_REDIS_ENABLED: true
+      CACHE_REDIS_URI: redis://redis:6379
+      CACHE_REDIS_PREFIX_KEY: evolution
+      CACHE_LOCAL_ENABLED: false
+      CONFIG_SESSION_PHONE_VERSION: "2,3000,1015901307"
+    dns:
+      - "8.8.8.8"
+      - "8.8.4.4"
+    volumes:
+      - evolution_data:/usr/src/app/storage
+    restart: unless-stopped
+    depends_on:
+      evolution_postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+
+  # ─── PostgreSQL (Evolution DB) ─────────────────────────────────
+  evolution_postgres:
+    image: postgres:16-alpine
+    container_name: glamnail_evolution_postgres
+    environment:
+      POSTGRES_USER: evolution
+      POSTGRES_PASSWORD: ${EVOLUTION_POSTGRES_PASSWORD:-evolution123}
+      POSTGRES_DB: evolution
+    volumes:
+      - evolution_postgres_data:/var/lib/postgresql/data
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U evolution"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+volumes:
+  postgres_data:
+  evolution_data:
+  evolution_postgres_data:
