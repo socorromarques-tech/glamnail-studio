@@ -1,4 +1,4 @@
-node:20-alpine
+FROM node:20-alpine
 
 WORKDIR /app
 
@@ -6,16 +6,19 @@ WORKDIR /app
 COPY package.json package-lock.json* ./
 RUN npm ci --ignore-scripts
 
-# Generate Prisma client
+# 1. Copy prisma directory EXPLICITLY before generating
+COPY prisma ./prisma/
+
+# 2. Generate Prisma client
 RUN npx prisma generate
 
-# Copy source
+# 3. Copy the rest of the source code
 COPY . .
 
-# Build
+# 4. Build the application
 RUN npm run build
 
-# Production
+# Production Environment
 ENV NODE_ENV=production
 ENV NEXT_TELEMETRY_DISABLED=1
 
