@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { openai, getSystemPrompt, tools, callTool } from "@/lib/ai/client";
+import { getOpenAI, getSystemPrompt, tools, callTool } from "@/lib/ai/client";
 import { z } from "zod";
 
 const chatSchema = z.object({
@@ -55,7 +55,7 @@ export async function POST(request: Request) {
       { role: "user", content: message },
     ];
 
-    const response = await openai.chat.completions.create({
+    const response = await getOpenAI().chat.completions.create({
       model: "gpt-4o-mini",
       messages,
       tools: tools.map((t) => ({

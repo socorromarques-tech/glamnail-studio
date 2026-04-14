@@ -1,4 +1,4 @@
-import { openai, getSystemPrompt, tools, callTool } from "@/lib/ai/client";
+import { getOpenAI, getSystemPrompt, tools, callTool } from "@/lib/ai/client";
 
 type ConversationEntry = { role: "user" | "assistant"; content: string };
 
@@ -71,7 +71,7 @@ export async function processChat(
   ];
 
   // Call OpenAI with tools
-  const completion = await openai.chat.completions.create({
+  const completion = await getOpenAI().chat.completions.create({
     model: "gpt-4o-mini",
     messages,
     tools: tools.map((tool) => ({
@@ -132,7 +132,7 @@ export async function processChat(
       })),
     ];
 
-    const finalCompletion = await openai.chat.completions.create({
+    const finalCompletion = await getOpenAI().chat.completions.create({
       model: "gpt-4o-mini",
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       messages: messagesWithToolCalls as any,
