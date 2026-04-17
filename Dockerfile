@@ -6,16 +6,16 @@ WORKDIR /app
 COPY package.json package-lock.json* ./
 RUN npm ci --ignore-scripts
 
-# 1. Copy prisma directory EXPLICITLY before generating
-COPY prisma ./prisma/
+# Copy Prisma schema
+COPY prisma ./prisma
 
-# 2. Generate Prisma client
+# Generate Prisma client
 RUN npx prisma generate
 
-# 3. Copy the rest of the source code
+# Copy the rest of the source code
 COPY . .
 
-# 4. Build the application
+# Build the application
 RUN npm run build
 
 # Production Environment
