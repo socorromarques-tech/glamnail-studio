@@ -13,6 +13,9 @@ export function getOpenAI() {
   return openaiInstance;
 }
 
+export type Service = {
+  id: string;
+  name: string;
   description: string | null;
   price: number;
   duration: number;
