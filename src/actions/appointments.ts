@@ -208,69 +208,85 @@ export async function updateAppointment(
 }
 
 export async function getAvailableSlots(date: string, serviceIds: string[]) {
-  const config = await prisma.businessConfig.findFirst();
-  if (!config) return [];
+  try {
+    const config = await prisma.businessConfig.findFirst();
+    if (!config) {
+      console.error("[getAvailableSlots] No config found");
+      return [];
+    }
 
-  const services = await prisma.service.findMany({
-    where: { id: { in: serviceIds } },
-  });
-
-  const totalDuration = services.reduce((sum, s) => sum + s.duration, 0);
-  const workDays = config.workDays.split(",").map(Number);
-
-  const requestedDate = new Date(date);
-  const dayOfWeek = requestedDate.getDay();
-  if (!workDays.includes(dayOfWeek)) return [];
-
-  const startOfDay = new Date(date);
-  startOfDay.setHours(0, 0, 0, 0);
-  const endOfDay = new Date(date);
-  endOfDay.setHours(23, 59, 59, 999);
-
-  const existing = await prisma.appointment.findMany({
-    where: {
-      date: { gte: startOfDay, lte: endOfDay },
-      status: { notIn: ["CANCELLED"] },
-    },
-    orderBy: { date: "asc" },
-  });
-
-  const [openH, openM] = config.openTime.split(":").map(Number);
-  const [closeH, closeM] = config.closeTime.split(":").map(Number);
-  const slots: { time: string; available: boolean }[] = [];
-
-  let currentMinutes = openH * 60 + openM;
-  const endMinutes = closeH * 60 + closeM;
-
-  while (currentMinutes + totalDuration <= endMinutes) {
-    const slotStart = new Date(date);
-    slotStart.setHours(
-      Math.floor(currentMinutes / 60),
-      currentMinutes % 60,
-      0,
-      0,
-    );
-    const slotEnd = new Date(slotStart);
-    slotEnd.setMinutes(slotEnd.getMinutes() + totalDuration);
-
-    const isAvailable = !existing.some((apt) => {
-      const aptStart = new Date(apt.date);
-      const aptEnd = new Date(apt.endTime);
-      return slotStart < aptEnd && slotEnd > aptStart;
+    const services = await prisma.service.findMany({
+      where: { id: { in: serviceIds } },
     });
 
-    slots.push({
-      time: `${Math.floor(currentMinutes / 60)
-        .toString()
-        .padStart(
-          2,
-          "0",
-        )}:${(currentMinutes % 60).toString().padStart(2, "0")}`,
-      available: isAvailable,
+    if (services.length === 0) {
+      console.error(
+        "[getAvailableSlots] No services found for IDs:",
+        serviceIds,
+      );
+      return [];
+    }
+
+    const totalDuration = services.reduce((sum, s) => sum + s.duration, 0);
+    const workDays = config.workDays.split(",").map(Number);
+
+    const requestedDate = new Date(date);
+    const dayOfWeek = requestedDate.getDay();
+    if (!workDays.includes(dayOfWeek)) return [];
+
+    const startOfDay = new Date(date);
+    startOfDay.setHours(0, 0, 0, 0);
+    const endOfDay = new Date(date);
+    endOfDay.setHours(23, 59, 59, 999);
+
+    const existing = await prisma.appointment.findMany({
+      where: {
+        date: { gte: startOfDay, lte: endOfDay },
+        status: { notIn: ["CANCELLED"] },
+      },
+      orderBy: { date: "asc" },
     });
 
-    currentMinutes += config.slotInterval;
+    const [openH, openM] = config.openTime.split(":").map(Number);
+    const [closeH, closeM] = config.closeTime.split(":").map(Number);
+    const slots: { time: string; available: boolean }[] = [];
+
+    let currentMinutes = openH * 60 + openM;
+    const endMinutes = closeH * 60 + closeM;
+
+    while (currentMinutes + totalDuration <= endMinutes) {
+      const slotStart = new Date(date);
+      slotStart.setHours(
+        Math.floor(currentMinutes / 60),
+        currentMinutes % 60,
+        0,
+        0,
+      );
+      const slotEnd = new Date(slotStart);
+      slotEnd.setMinutes(slotEnd.getMinutes() + totalDuration);
+
+      const isAvailable = !existing.some((apt) => {
+        const aptStart = new Date(apt.date);
+        const aptEnd = new Date(apt.endTime);
+        return slotStart < aptEnd && slotEnd > aptStart;
+      });
+
+      slots.push({
+        time: `${Math.floor(currentMinutes / 60)
+          .toString()
+          .padStart(
+            2,
+            "0",
+          )}:${(currentMinutes % 60).toString().padStart(2, "0")}`,
+        available: isAvailable,
+      });
+
+      currentMinutes += config.slotInterval;
+    }
+
+    return slots;
+  } catch (error) {
+    console.error("[getAvailableSlots] Error:", error);
+    return [];
   }
-
-  return slots;
 }
