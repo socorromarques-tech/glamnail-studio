@@ -123,9 +123,16 @@ export function BookingForm({
       return;
     }
 
+    console.log(
+      "[BookingForm] Loading slots for date:",
+      date,
+      "services:",
+      selectedServices,
+    );
     setLoadingSlots(true);
     try {
       const available = await getAvailableSlots(date, selectedServices);
+      console.log("[BookingForm] Got slots:", available.length);
       setSlots(available);
     } catch (error) {
       console.error(error);
