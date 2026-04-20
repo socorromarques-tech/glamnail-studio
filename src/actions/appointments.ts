@@ -208,8 +208,15 @@ export async function updateAppointment(
 }
 
 export async function getAvailableSlots(date: string, serviceIds: string[]) {
+  console.log(
+    "[getAvailableSlots] Called with date:",
+    date,
+    "serviceIds:",
+    serviceIds,
+  );
   try {
     const config = await prisma.businessConfig.findFirst();
+    console.log("[getAvailableSlots] Config:", config);
     if (!config) {
       console.error("[getAvailableSlots] No config found");
       return [];
@@ -218,6 +225,7 @@ export async function getAvailableSlots(date: string, serviceIds: string[]) {
     const services = await prisma.service.findMany({
       where: { id: { in: serviceIds } },
     });
+    console.log("[getAvailableSlots] Services found:", services.length);
 
     if (services.length === 0) {
       console.error(
