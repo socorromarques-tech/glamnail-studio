@@ -214,6 +214,7 @@ export async function getAvailableSlots(date: string, serviceIds: string[]) {
     "serviceIds:",
     serviceIds,
   );
+  console.log("[getAvailableSlots] Stack:", new Error().stack);
   try {
     const config = await prisma.businessConfig.findFirst();
     console.log("[getAvailableSlots] Config:", config);
