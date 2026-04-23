@@ -6,7 +6,8 @@ export function getOpenAI() {
   if (!openaiInstance) {
     const apiKey = process.env.OPENAI_API_KEY;
     if (!apiKey) {
-      throw new Error("Missing OPENAI_API_KEY environment variable");
+      console.warn("[getOpenAI] Missing OPENAI_API_KEY. AI features will be disabled.");
+      return null;
     }
     openaiInstance = new OpenAI({ apiKey });
   }
@@ -155,8 +156,13 @@ export const tools = [
 export async function callTool(
   toolName: string,
   args: Record<string, unknown>,
+  host?: string,
 ): Promise<string> {
-  const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000";
+  const baseUrl = host
+    ? `${host.startsWith("http") ? "" : "https://"}${host}`
+    : process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000";
+
+  console.log(`[callTool] Executing ${toolName} via ${baseUrl}`);
 
   switch (toolName) {
     case "get_services": {

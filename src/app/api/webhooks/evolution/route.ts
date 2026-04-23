@@ -34,6 +34,7 @@ export async function POST(request: Request) {
     }
 
     const body: EvolutionWebhookPayload = await request.json();
+    console.log("[Evolution Webhook] Received event:", body.event, "from:", body.data?.key?.remoteJid);
 
     if (body.event !== "MESSAGES_UPSERT") {
       return NextResponse.json({ status: "ignored" });

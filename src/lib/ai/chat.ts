@@ -37,6 +37,10 @@ export async function sendWhatsAppMessage(
       }),
     });
 
+    if (!response.ok) {
+      const errorData = await response.text();
+      console.error("[sendWhatsAppMessage] Evolution API error:", response.status, errorData);
+    }
     return response.ok;
   } catch (error) {
     console.error("[sendWhatsAppMessage] Error sending message:", error);
@@ -106,7 +110,7 @@ export async function processChat(
           string,
           unknown
         >;
-        const result = await callTool(toolName, toolArgs);
+        const result = await callTool(toolName, toolArgs, process.env.VERCEL_URL || process.env.NEXT_PUBLIC_BASE_URL);
         return { toolCallId: fn.id, result };
       }),
     );
