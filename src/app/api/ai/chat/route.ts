@@ -55,7 +55,9 @@ export async function POST(request: Request) {
       { role: "user", content: message },
     ];
 
-    const response = await getOpenAI().chat.completions.create({
+    const openai = getOpenAI();
+    if (!openai) return NextResponse.json({ error: "AI not configured" }, { status: 503 });
+    const response = await openai.chat.completions.create({
       model: "gpt-4o-mini",
       messages,
       tools: tools.map((t) => ({
