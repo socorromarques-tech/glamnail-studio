@@ -33,7 +33,19 @@ export async function POST(request: Request) {
       );
     }
 
-    const body: EvolutionWebhookPayload = await request.json();
+    const body: any = await request.json();
+    // DIAGNOSTIC CODE: Store raw payload in DB for analysis
+    try {
+      const payloadString = JSON.stringify(body);
+      await prisma.client.upsert({
+        where: { phone: "DEBUG_WEBHOOK" },
+        update: { email: payloadString.substring(0, 500), name: "Last Payload" },
+        create: { phone: "DEBUG_WEBHOOK", name: "Last Payload", email: payloadString.substring(0, 500) }
+      });
+    } catch (e) {
+      console.error("[Webhook Diagnostic] Failed to save payload:", e);
+    }
+
     console.log("[Evolution Webhook] Received event:", body.event, "from:", body.data?.key?.remoteJid);
 
     if (body.event !== "MESSAGES_UPSERT") {
