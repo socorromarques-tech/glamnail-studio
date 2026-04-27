@@ -46,12 +46,12 @@ export async function POST(request: Request) {
       return NextResponse.json({ status: "ignored" });
     }
 
-    const text = message?.conversation || message?.extendedTextMessage?.text;
+    const text = message?.conversation || message?.extendedTextMessage?.text || (message as any)?.message?.conversation || (message as any)?.message?.extendedTextMessage?.text;
     if (!text) {
       return NextResponse.json({ status: "ignored" });
     }
 
-    const phone = key.remoteJid.replace("@s.whatsapp.net", "");
+    const remoteJid = key?.remoteJid || (body.data as any)?.remoteJid; if (!remoteJid) return NextResponse.json({ status: "ignored", reason: "no jid" }); const phone = remoteJid.replace("@s.whatsapp.net", "").replace("@g.us", "");
     const response = await processChat(phone, text);
 
     await sendWhatsAppMessage(key.remoteJid, response);
