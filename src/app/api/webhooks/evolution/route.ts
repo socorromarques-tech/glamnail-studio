@@ -10,6 +10,10 @@ export async function POST(request: Request) {
   try {
     const body = await request.json();
     console.log(
+      "[Evolution Webhook] Full Body:",
+      JSON.stringify(body, null, 2),
+    );
+    console.log(
       "[Evolution Webhook] Received event:",
       body.event,
       "from:",
