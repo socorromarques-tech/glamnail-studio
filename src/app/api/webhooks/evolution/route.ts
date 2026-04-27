@@ -16,7 +16,7 @@ export async function POST(request: Request) {
       body.data?.key?.remoteJid,
     );
 
-    if (body.event !== "MESSAGES_UPSERT") {
+    if (body.event !== "MESSAGES_UPSERT" && body.event !== "messages.upsert") {
       return NextResponse.json({ status: "ignored" });
     }
 
