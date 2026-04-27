@@ -26,26 +26,13 @@ interface EvolutionWebhookPayload {
 }
 
 export async function POST(request: Request) {
-  try {
-    if (!process.env.OPENAI_API_KEY) {
-      return NextResponse.json(
-        { error: "OpenAI not configured" },
-        { status: 500 },
-      );
-    }
-
-    const body: any = await request.json();
-    // DIAGNOSTIC CODE: Store raw payload in DB for analysis
+  
+    // TRACER: Capture incoming payload structure safely
     try {
       const payloadString = JSON.stringify(body);
-      await prisma.client.upsert({
-        where: { phone: "DEBUG_WEBHOOK" },
-        update: { email: payloadString.substring(0, 500), name: "Last Payload" },
-        create: { phone: "DEBUG_WEBHOOK", name: "Last Payload", email: payloadString.substring(0, 500) }
-      });
-    } catch (e) {
-      console.error("[Webhook Diagnostic] Failed to save payload:", e);
-    }
+      console.log("[Webhook Tracer] Raw Payload:", payloadString);
+    } catch (e) {}
+
 
     console.log("[Evolution Webhook] Received event:", body.event, "from:", body.data?.key?.remoteJid);
 
