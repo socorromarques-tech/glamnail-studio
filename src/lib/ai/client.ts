@@ -198,7 +198,10 @@ export async function callTool(
     }
 
     case "find_or_create_client": {
-      console.log("[callTool] find_or_create_client args:", args);
+      console.log(
+        "[callTool] find_or_create_client args:",
+        JSON.stringify(args),
+      );
       const { phone, name } = args;
       const res = await fetch(`${baseUrl}/api/ai/clients`, {
         method: "POST",
@@ -206,6 +209,7 @@ export async function callTool(
         body: JSON.stringify({ phone, name }),
       });
       const data = await res.json();
+      console.log("[callTool] /api/ai/clients response:", JSON.stringify(data));
       if (data.client) {
         return `Cliente encontrado: ${data.client.name} (${data.client.phone})`;
       }
