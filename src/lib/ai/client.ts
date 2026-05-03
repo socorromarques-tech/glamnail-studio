@@ -6,7 +6,9 @@ export function getOpenAI() {
   if (!openaiInstance) {
     const apiKey = process.env.OPENAI_API_KEY;
     if (!apiKey) {
-      console.warn("[getOpenAI] Missing OPENAI_API_KEY. AI features will be disabled.");
+      console.warn(
+        "[getOpenAI] Missing OPENAI_API_KEY. AI features will be disabled.",
+      );
       return null;
     }
     openaiInstance = new OpenAI({ apiKey });
@@ -196,6 +198,7 @@ export async function callTool(
     }
 
     case "find_or_create_client": {
+      console.log("[callTool] find_or_create_client args:", args);
       const { phone, name } = args;
       const res = await fetch(`${baseUrl}/api/ai/clients`, {
         method: "POST",

@@ -41,9 +41,15 @@ export async function POST(request: Request) {
     }
 
     const phone = remoteJid.replace("@s.whatsapp.net", "").replace("@g.us", "");
-    const response = await processChat(phone, text);
+    console.log("[Webhook] Phone extracted:", phone);
+    console.log("[Webhook] Text received:", text);
 
-    await sendWhatsAppMessage(key.remoteJid, response);
+    const response = await processChat(phone, text);
+    console.log("[Webhook] AI Response:", response);
+
+    if (response && key.remoteJid) {
+      await sendWhatsAppMessage(key.remoteJid, response);
+    }
 
     return NextResponse.json({ status: "ok" });
   } catch (error) {
