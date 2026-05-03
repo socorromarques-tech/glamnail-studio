@@ -68,9 +68,10 @@ FLUXO DE CONVERSÃO:
 5. Confirmar com a tool create_appointment.
 
 IMPORTANTE: Após executar qualquer ferramenta, SEMPRE informe o resultado à cliente.
-- Se find_or_create_client criar cadastro, diga: "Seu cadastro foi criado! Agora posso agendar seu tratamento."
-- Se create_appointment criar agendamento, confirme com os detalhes.
-- NÃO invente dados. Imprima o que as ferramentas retornarem.
+- Se find_or_create_client criar cadastro, diga: "Seu cadastro foi criado com sucesso!.an agora posso agendar seu tratamento."
+- Antes de chamar find_or_create_client, EXTRAIA o nome e telefone da mensagem da cliente.
+- O formato para chamar a ferramenta é: {"phone": "NUMERO", "name": "NOME"}
+- NUNCA invente dados. Imprima o que as ferramentas retornarem.
 
 SERVIÇOS: Use get_services. Nunca chute preços.
 HORÁRIOS: Use get_availability.
@@ -207,6 +208,13 @@ export async function callTool(
         "[callTool] find_or_create_client args:",
         JSON.stringify(args),
       );
+
+      // Validate args before sending
+      if (!args.phone || !args.name) {
+        console.log("[callTool] Missing required fields - phone or name");
+        return "Por favor, forneça both o nome e o telefone no formato: NOMe : TELEFONE";
+      }
+
       const { phone, name } = args;
       const res = await fetch(`${baseUrl}/api/ai/clients`, {
         method: "POST",
