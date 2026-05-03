@@ -44,6 +44,22 @@ export async function POST(request: Request) {
     console.log("[Webhook] Phone extracted:", phone);
     console.log("[Webhook] Text received:", text);
 
+    // Auto-register client if new (don't wait for AI to call tool)
+    const { prisma } = await import("@/lib/prisma");
+    let existingClient = await prisma.client.findFirst({ where: { phone } });
+    if (!existingClient) {
+      // Create new client with placeholder name
+      existingClient = await prisma.client.create({
+        data: {
+          phone,
+          name: "Cliente WhatsApp",
+        },
+      });
+      console.log("[Webhook] New client created:", existingClient.id);
+    } else {
+      console.log("[Webhook] Existing client found:", existingClient.name);
+    }
+
     const response = await processChat(phone, text);
     console.log("[Webhook] AI Response:", response);
 
