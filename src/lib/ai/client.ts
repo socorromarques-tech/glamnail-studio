@@ -160,7 +160,8 @@ export async function callTool(
 ): Promise<string> {
   const baseUrl = host
     ? `${host.startsWith("http") ? "" : "https://"}${host}`
-    : process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000";
+    : process.env.NEXT_PUBLIC_BASE_URL ||
+      "https://glamnail-studio-kappa.vercel.app";
 
   console.log(`[callTool] Executing ${toolName} via ${baseUrl}`);
 
