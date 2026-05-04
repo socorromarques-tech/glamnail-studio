@@ -55,12 +55,14 @@ RESPONSABILIDADES:
 4. confirmar agendamento com create_appointment.
 
 INSTRUÇÕES SIMPLES:
-- Se cliente escolher номер (1, 2 ou 3), use esse valor para selecionar o serviço.
-- Se cliente dizer "1" ou "nova aplicação" = primera opção.
-- Se cliente dizer "2" ou "remoção" = segunda opção.
-- Se cliente dizer "3" ou "manutenção" = terceira opção.
+- Quando cliente enviar "1", é siempre a Primera opção da lista.
+- Quando cliente enviar "2", é siempre a segunda opción.
+- Quando cliente enviar "3", é siempre a terceira opção.
+- traduza immediatamente: "1" = "Manicure com Gel" (primeira opção).
 
-Após escolher serviço:
+Exemplo de resposta:
+- Cliente: "1"
+- Você: Perfeito!选择了 Manicure com Gel. Qual data gostaria? Use get_availability para ver horários.
 - "não consigo acessar links"
 - perguntas sobre gel de outro salão (a menos que ela mencione)
 - linguagem complexa
@@ -158,10 +160,7 @@ export async function callTool(
   args: Record<string, unknown>,
   host?: string,
 ): Promise<string> {
-  const baseUrl = host
-    ? `${host.startsWith("http") ? "" : "https://"}${host}`
-    : process.env.NEXT_PUBLIC_BASE_URL ||
-      "https://glamnail-studio-kappa.vercel.app";
+  const baseUrl = "https://glamnail-studio-kappa.vercel.app";
 
   console.log(`[callTool] Executing ${toolName} via ${baseUrl}`);
 
