@@ -217,16 +217,22 @@ export async function getAvailableSlots(date: string, serviceIds: string[]) {
   console.log("[getAvailableSlots] Stack:", new Error().stack);
   try {
     const config = await prisma.businessConfig.findFirst();
-    console.log("[getAvailableSlots] Config:", config);
+    console.log("[getAvailableSlots] Config:", JSON.stringify(config));
     if (!config) {
-      console.error("[getAvailableSlots] No config found");
+      console.error(
+        "[getAvailableSlots] No config found - businessConfig table is empty",
+      );
       return [];
     }
 
     const services = await prisma.service.findMany({
       where: { id: { in: serviceIds } },
     });
-    console.log("[getAvailableSlots] Services found:", services.length);
+    console.log(
+      "[getAvailableSlots] Services found:",
+      services.length,
+      serviceIds,
+    );
 
     if (services.length === 0) {
       console.error(
@@ -241,7 +247,16 @@ export async function getAvailableSlots(date: string, serviceIds: string[]) {
 
     const requestedDate = new Date(date);
     const dayOfWeek = requestedDate.getDay();
-    if (!workDays.includes(dayOfWeek)) return [];
+    console.log(
+      "[getAvailableSlots] Day of week:",
+      dayOfWeek,
+      "Work days:",
+      workDays,
+    );
+    if (!workDays.includes(dayOfWeek)) {
+      console.log("[getAvailableSlots] Day not in work days - returning empty");
+      return [];
+    }
 
     const startOfDay = new Date(date);
     startOfDay.setHours(0, 0, 0, 0);
@@ -293,6 +308,14 @@ export async function getAvailableSlots(date: string, serviceIds: string[]) {
       currentMinutes += config.slotInterval;
     }
 
+    console.log(
+      "[getAvailableSlots] Returning slots:",
+      slots.length,
+      "from",
+      config.openTime,
+      "to",
+      config.closeTime,
+    );
     return slots;
   } catch (error) {
     console.error("[getAvailableSlots] Error:", error);
