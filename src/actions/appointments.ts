@@ -231,7 +231,19 @@ export async function getAvailableSlots(date: string, serviceIds: string[]) {
     console.log(
       "[getAvailableSlots] Services found:",
       services.length,
-      serviceIds,
+      "of",
+      serviceIds.length,
+      "requested",
+    );
+    console.log(
+      "[getAvailableSlots] Requested IDs:",
+      JSON.stringify(serviceIds),
+    );
+    console.log(
+      "[getAvailableSlots] Found services:",
+      JSON.stringify(
+        services.map((s) => ({ id: s.id, name: s.name, duration: s.duration })),
+      ),
     );
 
     if (services.length === 0) {
@@ -248,10 +260,14 @@ export async function getAvailableSlots(date: string, serviceIds: string[]) {
     const requestedDate = new Date(date);
     const dayOfWeek = requestedDate.getDay();
     console.log(
-      "[getAvailableSlots] Day of week:",
+      "[getAvailableSlots] Date parsing:",
+      date,
+      "-> Day of week:",
       dayOfWeek,
-      "Work days:",
+      "(0=Sun, 1=Mon, ...) Work days:",
       workDays,
+      "includes:",
+      workDays.includes(dayOfWeek),
     );
     if (!workDays.includes(dayOfWeek)) {
       console.log("[getAvailableSlots] Day not in work days - returning empty");
@@ -262,6 +278,12 @@ export async function getAvailableSlots(date: string, serviceIds: string[]) {
     startOfDay.setHours(0, 0, 0, 0);
     const endOfDay = new Date(date);
     endOfDay.setHours(23, 59, 59, 999);
+    console.log(
+      "[getAvailableSlots] Searching appointments from:",
+      startOfDay,
+      "to:",
+      endOfDay,
+    );
 
     const existing = await prisma.appointment.findMany({
       where: {
@@ -315,7 +337,12 @@ export async function getAvailableSlots(date: string, serviceIds: string[]) {
       config.openTime,
       "to",
       config.closeTime,
+      "totalDuration:",
+      totalDuration,
+      "existingAppointments:",
+      existing.length,
     );
+    console.log("[getAvailableSlots] Full slots array:", JSON.stringify(slots));
     return slots;
   } catch (error) {
     console.error("[getAvailableSlots] Error:", error);
