@@ -78,6 +78,7 @@ export function BookingForm({
   );
   const [loadingSlots, setLoadingSlots] = useState(false);
   const [slotError, setSlotError] = useState<string | null>(null);
+  const [serviceNotFound, setServiceNotFound] = useState(false);
   const [form, setForm] = useState({
     name: "",
     phone: "",
@@ -131,14 +132,35 @@ export function BookingForm({
     );
     setLoadingSlots(true);
     try {
-      const available = await getAvailableSlots(date, selectedServices);
-      console.log(
-        "[BookingForm] Got slots:",
-        available.length,
-        "Full result:",
-        JSON.stringify(available),
-      );
-      setSlots(available);
+      const result = await getAvailableSlots(date, selectedServices);
+
+      // Check if result is an error object
+      if (result && typeof result === "object" && "error" in result) {
+        console.error("[BookingForm] Server error:", result.error);
+        setSlotError(result.error as string);
+        return;
+      }
+
+      // Check if services were not found
+      if (result === null || result === undefined) {
+        console.error(
+          "[BookingForm] getAvailableSlots returned null/undefined",
+        );
+        setServiceNotFound(true);
+        return;
+      }
+
+      // Check if services not found (empty services after filtering)
+      if (!Array.isArray(result) || result.length === 0) {
+        console.log(
+          "[BookingForm] Empty slots array - checking if services exist",
+        );
+        setServiceNotFound(true);
+        return;
+      }
+
+      setSlots(result);
+      setServiceNotFound(false);
     } catch (error) {
       console.error(error);
       setSlotError(
@@ -372,6 +394,14 @@ export function BookingForm({
                       description={slotError}
                       actionLabel="Tentar novamente"
                       onAction={() => handleDateChange(selectedDate)}
+                      icon={<AlertTriangle className="h-5 w-5" />}
+                    />
+                  ) : serviceNotFound ? (
+                    <BookingEmptyState
+                      title="Serviço não encontrado"
+                      description="O serviço selecionado não existe na base de dados. Por favor, volte ao passo anterior e selecione um serviço válido."
+                      actionLabel="Voltar ao passo 1"
+                      onAction={() => setStep(1)}
                       icon={<AlertTriangle className="h-5 w-5" />}
                     />
                   ) : slots.length === 0 ? (
